@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="lib/angular/angular.min.js"></script>
+  <script src="lib/angular-ui-utils/ui-utils.min.js"></script>
+  <script src="lib/underscore/underscore-min.js"></script>
+  <script src="lib/melt.js"></script>
+
+  <style type="text/css">
+  .selected {background: yellow;}
+  </style>
+</head>
+<body ng-app="MeltApp">
+  <div ng-controller="MeltController">
+    <div class="row">
+      <div class="col-md-6">
+        <input class="input-lg"
+          style="z-index:10; width:100%"
+          type="text"
+          ng-model="query"
+          ng-change="query_change()"
+          ui-keydown="{'enter down up esc': 'query_key($event)'}"
+          placeholder="Search for Songs"
+        >
+        <div style="position:absolute; z-index: 1; background-color:rgba(255, 255, 255, 0.9); width:100%; margin-top:0em; border-bottom-left-radius: .618em; border-bottom-right-radius: .618em; padding-left: .5em;">
+          <ul id="search-list" style="margin:0;">
+            <li class="width100"
+                ng-repeat="melt in results"
+                ng-click="select(melt.file)"
+                ng-class="{'selected': $index == ready_to_select}"
+                ng-mouseover="mouseover($index)"
+                ng-mouseleave="mouseleave($index)"
+            >
+              {{ melt.name }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div><!-- row -->
+    <div class="song">
+    <pre>
+{{ song_data }}
+    </pre>
+    </div>
+  </div><!-- FoodSearchController -->
+</body>
+</html>
