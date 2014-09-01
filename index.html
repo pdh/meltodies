@@ -7,7 +7,45 @@
   <script src="lib/melt.js"></script>
 
   <style type="text/css">
-  .selected {background: yellow;}
+.selected {background: yellow;}
+
+.song {
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+  font-size: 110%;
+}
+
+/*
+@media screen and (max-width: 980px) {
+  .song {
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+  }
+}
+*/
+
+@media screen and (max-width: 960px) {
+  .song {
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+    font-size: 100%;
+  }
+}
+
+@media screen and (max-width: 580px) {
+  .song {
+    -webkit-column-count: 1;
+    -moz-column-count: 1;
+    column-count: 1;
+    font-size: 90%;
+  }
+}
+
+
+
   </style>
 </head>
 <body ng-app="MeltApp">
