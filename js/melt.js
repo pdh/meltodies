@@ -98,10 +98,11 @@
       return $scope.ready_to_select = -1;
     };
     return $scope.select = function(datum) {
+      var _setColumnWidth;
       $scope.query = "";
       $scope.results = [];
       $scope.selected = datum;
-      return $http({
+      $http({
         method: "GET",
         url: datum.file
       }).success(function(data) {
@@ -112,9 +113,23 @@
           $scope.song_meta = null;
           $scope.song_data = data;
         }
-        document.getElementById('pre-song').innerHTML = $scope.song_data;
-        return document.getElementById('song-meta').innerHTML = $scope.song_meta;
+        _setColumnWidth(Math.round(_.max(scope.song_data.split("\n")).length * .69));
+        document.getElementById('song-meta').innerHTML = $scope.song_meta;
+        return document.getElementById('pre-song').innerHTML = $scope.song_data;
       });
+      return _setColumnWidth = function(column_width) {
+        var el, els, w, _i, _len, _results;
+        els = document.querySelectorAll(".song");
+        w = column_width + "em";
+        _results = [];
+        for (_i = 0, _len = els.length; _i < _len; _i++) {
+          el = els[_i];
+          el.style["-webkit-column-width"] = w;
+          el.style["-moz-column-width"] = w;
+          _results.push(el.style["column-width"] = w);
+        }
+        return _results;
+      };
     };
   };
 

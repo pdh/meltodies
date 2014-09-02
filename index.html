@@ -23,7 +23,6 @@ ul {
   -webkit-column-count: 3;
   -moz-column-count: 3;
   column-count: 3;
-  font-size: 110%;
 }
 
 .song pre {
@@ -32,21 +31,9 @@ ul {
   overflow: unset; /* fix for moz */
 }
 
-@media screen and (max-width: 960px) {
-  .song {
-    -webkit-column-count: 2;
-    -moz-column-count: 2;
-    column-count: 2;
-    font-size: 100%;
-  }
-}
-
 @media screen and (max-width: 580px) {
-  .song {
-    -webkit-column-count: 1;
-    -moz-column-count: 1;
-    column-count: 1;
-    font-size: 90%;
+  .song pre {
+    font-size: 85%;
   }
 }
   </style>
