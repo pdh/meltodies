@@ -115,10 +115,17 @@ MeltController = ($scope, $http) ->
         $scope.song_meta = null
         $scope.song_data = data
 
-      column_width = Math.round(_.max(scope.song_data.split("\n")).length * .6)
+      _setColumnWidth Math.round(_.max(scope.song_data.split("\n")).length * .69)
       document.getElementById('song-meta').innerHTML = $scope.song_meta
       document.getElementById('pre-song').innerHTML = $scope.song_data
 
+    _setColumnWidth = (column_width) ->
+      els = document.querySelectorAll(".song")
+      w = column_width + "em"
+      for el in els
+        el.style["-webkit-column-width"] = w
+        el.style["-moz-column-width"] = w
+        el.style["column-width"] = w
 
 MeltController.$inject = ['$scope', '$http']
 
