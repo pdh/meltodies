@@ -105,7 +105,8 @@
         method: "GET",
         url: datum.file
       }).success(function(data) {
-        return $scope.song_data = data;
+        $scope.song_data = data;
+        return document.getElementById('pre-song').innerHTML = data;
       });
     };
   };

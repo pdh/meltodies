@@ -74,9 +74,8 @@ ul {
       </div>
     </div><!-- row -->
     <div class="song" ng-show="song_data">
-    <pre contenteditable="true">
-{{ song_data }}
-    </pre>
+      <!-- if contenteditable, angular gets it messed up, so we set directly -->
+      <pre id="pre-song" contenteditable="true"></pre>
     </div>
   </div><!-- MeltController -->
 </body>
