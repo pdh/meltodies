@@ -15,6 +15,10 @@ ul {
 }
 .selected {background: yellow;}
 
+.song-meta-container {
+  padding: 3px;
+}
+
 .song {
   -webkit-column-count: 3;
   -moz-column-count: 3;
@@ -25,6 +29,7 @@ ul {
 .song pre {
   /* break-word makes it too confusing with chords ... hrm ... */
   word-wrap: normal;
+  overflow: unset; /* fix for moz */
 }
 
 @media screen and (max-width: 960px) {
@@ -73,6 +78,9 @@ ul {
         </div>
       </div>
     </div><!-- row -->
+    <div class="song-meta-container">
+      <div id="song-meta"></div>
+    </div>
     <div class="song" ng-show="song_data">
       <!-- if contenteditable, angular gets it messed up, so we set directly -->
       <pre id="pre-song" contenteditable="true"></pre>

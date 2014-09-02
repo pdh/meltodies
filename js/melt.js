@@ -105,8 +105,15 @@
         method: "GET",
         url: datum.file
       }).success(function(data) {
-        $scope.song_data = data;
-        return document.getElementById('pre-song').innerHTML = data;
+        if (data.indexOf('---') > -1) {
+          $scope.song_meta = data.split('---')[1];
+          $scope.song_data = data.split('---')[2];
+        } else {
+          $scope.song_meta = null;
+          $scope.song_data = data;
+        }
+        document.getElementById('pre-song').innerHTML = $scope.song_data;
+        return document.getElementById('song-meta').innerHTML = $scope.song_meta;
       });
     };
   };
