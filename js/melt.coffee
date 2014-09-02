@@ -119,6 +119,7 @@ MeltController = ($scope, $http) ->
       document.getElementById('song-meta').innerHTML = $scope.song_meta
       document.getElementById('pre-song').innerHTML = $scope.song_data
 
+
 MeltController.$inject = ['$scope', '$http']
 
 
