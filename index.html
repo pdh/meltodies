@@ -6,7 +6,13 @@
   <script src="lib/underscore/underscore-min.js"></script>
   <script src="lib/melt.js"></script>
 
+  <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css">
   <style type="text/css">
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
 .selected {background: yellow;}
 
 .song {
@@ -14,6 +20,11 @@
   -moz-column-count: 3;
   column-count: 3;
   font-size: 110%;
+}
+
+.song pre {
+  /* break-word makes it too confusing with chords ... hrm ... */
+  word-wrap: normal;
 }
 
 @media screen and (max-width: 960px) {
@@ -36,7 +47,7 @@
   </style>
 </head>
 <body ng-app="MeltApp">
-  <div ng-controller="MeltController">
+  <div ng-controller="MeltController" class="container-fluid">
     <div class="row">
       <div class="col-md-6">
         <input class="input-lg"
@@ -47,9 +58,9 @@
           ui-keydown="{'enter down up esc': 'query_key($event)'}"
           placeholder="Search for Songs"
         >
-        <div style="position:absolute; z-index: 1; background-color:rgba(255, 255, 255, 0.9); width:100%; margin-top:0em; border-bottom-left-radius: .618em; border-bottom-right-radius: .618em; padding-left: .5em;">
-          <ul id="search-list" style="margin:0;">
-            <li class="width100"
+        <div style="position:absolute; z-index: 1; background-color:rgba(255, 255, 255, 0.9); width:90%; margin-top:0em; border-bottom-left-radius: .618em; border-bottom-right-radius: .618em; padding-left: .5em;">
+          <ul id="search-list">
+            <li
                 ng-repeat="melt in results"
                 ng-click="select(melt.file)"
                 ng-class="{'selected': $index == ready_to_select}"
@@ -62,8 +73,8 @@
         </div>
       </div>
     </div><!-- row -->
-    <div class="song">
-    <pre>
+    <div class="song" ng-show="song_data">
+    <pre contenteditable="true">
 {{ song_data }}
     </pre>
     </div>
