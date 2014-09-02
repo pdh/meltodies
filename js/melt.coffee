@@ -108,8 +108,14 @@ MeltController = ($scope, $http) ->
       url: datum.file
     ).success (data) ->
       # still set it to know if we are going to show it :D
-      $scope.song_data = data
-      document.getElementById('pre-song').innerHTML = data
+      if data.indexOf('---') > -1
+        $scope.song_meta = data.split('---')[1]
+        $scope.song_data = data.split('---')[2]
+      else
+        $scope.song_meta = null
+        $scope.song_data = data
+      document.getElementById('pre-song').innerHTML = $scope.song_data
+      document.getElementById('song-meta').innerHTML = $scope.song_meta
 
 MeltController.$inject = ['$scope', '$http']
 
