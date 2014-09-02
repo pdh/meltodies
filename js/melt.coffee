@@ -111,6 +111,13 @@ MeltController = ($scope, $http) ->
       if data.indexOf('---') > -1
         $scope.song_meta = data.split('---')[1]
         $scope.song_data = data.split('---')[2]
+
+        try
+            metal = jsyaml.load($scope.song_meta)
+            $scope.tube_url = 'tube_url' in metal ? metal.tube_url : null
+        catch error
+            # errrandle!
+            # console.log error
       else
         $scope.song_meta = null
         $scope.song_data = data
