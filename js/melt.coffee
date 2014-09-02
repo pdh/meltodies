@@ -114,8 +114,10 @@ MeltController = ($scope, $http) ->
       else
         $scope.song_meta = null
         $scope.song_data = data
-      document.getElementById('pre-song').innerHTML = $scope.song_data
+
+      column_width = Math.round(_.max(scope.song_data.split("\n")).length * .6)
       document.getElementById('song-meta').innerHTML = $scope.song_meta
+      document.getElementById('pre-song').innerHTML = $scope.song_data
 
 MeltController.$inject = ['$scope', '$http']
 
