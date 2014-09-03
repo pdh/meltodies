@@ -1,6 +1,11 @@
 meltodies
 =========
 
+Chords and lyrics for face melting melodies.
+
+Get On Up
+---------
+
 install bower and run `bower install`
 
 Run a dev server:
