@@ -20,3 +20,13 @@ Contributing
 ------------
 
 Add songs and then add the name/file to `songs.json`.
+
+To work with the clientside code,
+install [CoffeeScript](http://coffeescript.org/)
+
+Then, in the `js` directory:
+
+    coffee --watch --compile .
+
+Now you are ready to hack on the clientside code.
+We are trying to not have any serverside code here :-)

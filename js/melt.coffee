@@ -116,9 +116,8 @@ MeltController = ($scope, $http, $sce) ->
             $scope.tube_id = metal.tube_id
             if $scope.tube_id
               $scope.tube_url = $sce.trustAsResourceUrl(
-                'http://www.youtube.com/embed/' +
-                $scope.tube_id +
-                '?autoplay=1')
+                "http://www.youtube.com/embed/#{$scope.tube_id}"
+              )
         catch error
             # errrandle!
             console.log error

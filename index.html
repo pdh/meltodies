@@ -66,8 +66,8 @@ ul {
         </div>
       </div>
     </div><!-- row -->
-    <div class="song-meta-container">
-      <div id="song-meta"></div>
+    <div class="song-meta-container" ng-show="song_meta">
+      <pre id="song-meta"></pre>
     </div>
     <div class="song" ng-show="song_data">
       <!-- if contenteditable, angular gets it messed up, so we set directly -->
