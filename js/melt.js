@@ -5,7 +5,7 @@
 
   window.MeltApp = angular.module('MeltApp', ['ui.utils']);
 
-  MeltController = function($scope, $http) {
+  MeltController = function($scope, $http, $sce) {
     window.scope = $scope;
     $scope.results = [];
     $scope.ready_to_select = -1;
@@ -106,9 +106,20 @@
         method: "GET",
         url: datum.file
       }).success(function(data) {
+        var error, metal;
         if (data.indexOf('---') > -1) {
-          $scope.song_meta = data.split('---')[1];
+          $scope.song_meta = '---\n' + data.split('---')[1];
           $scope.song_data = data.split('---')[2];
+          try {
+            metal = jsyaml.load($scope.song_meta);
+            $scope.tube_id = metal.tube_id;
+            if ($scope.tube_id) {
+              $scope.tube_url = $sce.trustAsResourceUrl('http://www.youtube.com/embed/' + $scope.tube_id + '?autoplay=1');
+            }
+          } catch (_error) {
+            error = _error;
+            console.log(error);
+          }
         } else {
           $scope.song_meta = null;
           $scope.song_data = data;
@@ -133,7 +144,7 @@
     };
   };
 
-  MeltController.$inject = ['$scope', '$http'];
+  MeltController.$inject = ['$scope', '$http', '$sce'];
 
   angular.module('MeltApp').controller('MeltController', MeltController);
 

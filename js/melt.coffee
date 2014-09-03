@@ -2,7 +2,7 @@
 
 window.MeltApp = angular.module 'MeltApp', ['ui.utils']
 
-MeltController = ($scope, $http) ->
+MeltController = ($scope, $http, $sce) ->
   window.scope = $scope
   $scope.results = []
   $scope.ready_to_select = -1
@@ -109,8 +109,19 @@ MeltController = ($scope, $http) ->
     ).success (data) ->
       # still set it to know if we are going to show it :D
       if data.indexOf('---') > -1
-        $scope.song_meta = data.split('---')[1]
+        $scope.song_meta = '---\n' + data.split('---')[1]
         $scope.song_data = data.split('---')[2]
+        try
+            metal = jsyaml.load($scope.song_meta)
+            $scope.tube_id = metal.tube_id
+            if $scope.tube_id
+              $scope.tube_url = $sce.trustAsResourceUrl(
+                'http://www.youtube.com/embed/' +
+                $scope.tube_id +
+                '?autoplay=1')
+        catch error
+            # errrandle!
+            console.log error
       else
         $scope.song_meta = null
         $scope.song_data = data
@@ -127,7 +138,7 @@ MeltController = ($scope, $http) ->
         el.style["-moz-column-width"] = w
         el.style["column-width"] = w
 
-MeltController.$inject = ['$scope', '$http']
+MeltController.$inject = ['$scope', '$http', '$sce']
 
 
 angular.module('MeltApp').controller 'MeltController', MeltController
