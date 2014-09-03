@@ -14,5 +14,13 @@
     {
         "name": "Pancho and Lefty",
         "file": "melts/pancho_and_lefty.melt"
+    },
+    {
+        "name": "Big Rock Candy Mountain",
+        "file": "melts/big_rock_candy_moutain.melt"
+    },
+    {
+        "name": "Dead Flowers",
+        "file": "melts/dead_flowers.melt"
     }
 ]
