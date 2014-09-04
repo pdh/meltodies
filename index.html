@@ -5,6 +5,8 @@
   <script src="lib/angular-ui-utils/ui-utils.min.js"></script>
   <script src="lib/underscore/underscore-min.js"></script>
   <script src="lib/js-yaml/dist/js-yaml.min.js"></script>
+  <script src="lib/oauth-js/dist/oauth.js"></script>
+  <script src="lib/octokit/octokit.js"></script>
   <script src="js/melt.js"></script>
 
   <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css">
@@ -64,6 +66,12 @@ ul {
             </li>
           </ul>
         </div>
+      </div>
+      <div class="col-md-6" ng-show="!github">
+        <button ng-click="login()" class="btn btn-primary">
+          <img src="octocat.png" />
+          Connect with Github
+        </button>
       </div>
     </div><!-- row -->
     <div class="song-meta-container" ng-show="song_meta">

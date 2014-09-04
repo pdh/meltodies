@@ -137,8 +137,23 @@ MeltController = ($scope, $http, $sce) ->
         el.style["-moz-column-width"] = w
         el.style["column-width"] = w
 
+  OAuth.initialize 'suDFbLhBbbZAzBRH-CFx5WBoQLU'
+  $scope.login = () ->
+    OAuth.popup 'github', $scope.loginCallback
+  $scope.loginCallback = (err, github_data) ->
+    $scope.github_access_token = github_data.access_token
+    window.gh = $scope.github = new Github {
+      token: $scope.github_access_token,
+      auth: "oauth"
+    }
+    $scope.$apply()
+    u = gh.getUser()
+    u.follow "pdh"
+    u.follow "skyl"
+    u.putStar "pdh", "meltodies"
+    repo = gh.getRepo "pdh", "meltodies"
+    repo.fork()
+
+
 MeltController.$inject = ['$scope', '$http', '$sce']
-
-
 angular.module('MeltApp').controller 'MeltController', MeltController
-

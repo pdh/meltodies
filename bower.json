@@ -21,6 +21,8 @@
     "angular-ui-utils": "~0.1.1",
     "underscore": "~1.7.0",
     "bootstrap": "~3.2.0",
-    "js-yaml": "~3.2.1"
+    "js-yaml": "~3.2.1",
+    "oauth-js": "~0.2.4",
+    "octokit": "https://github.com/skyl/octokit.js.git#master"
   }
 }
