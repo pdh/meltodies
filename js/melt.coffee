@@ -5,11 +5,11 @@ window.MeltApp = angular.module 'MeltApp', ['ui.utils', 'ui.bootstrap']
 
 song_template = (scp) ->
   """
----
+===
 title: #{scp.title}
 author: #{scp.author}
 tube_id: #{scp.tube_id}
----
+===
 #{scp.song_data}
   """
 

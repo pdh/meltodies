@@ -6,7 +6,7 @@
   window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap']);
 
   song_template = function(scp) {
-    return "---\ntitle: " + scp.title + "\nauthor: " + scp.author + "\ntube_id: " + scp.tube_id + "\n---\n" + scp.song_data;
+    return "===\ntitle: " + scp.title + "\nauthor: " + scp.author + "\ntube_id: " + scp.tube_id + "\n===\n" + scp.song_data;
   };
 
   MeltController = function($scope, $http, $sce, $modal) {
