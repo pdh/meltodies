@@ -23,6 +23,7 @@
     "bootstrap": "~3.2.0",
     "js-yaml": "~3.2.1",
     "oauth-js": "~0.2.4",
-    "octokit": "https://github.com/skyl/octokit.js.git#master"
+    "octokit": "https://github.com/skyl/octokit.js.git#master",
+    "angular-bootstrap": "~0.11.0"
   }
 }

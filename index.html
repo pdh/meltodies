@@ -3,6 +3,7 @@
 <head>
   <script src="lib/angular/angular.min.js"></script>
   <script src="lib/angular-ui-utils/ui-utils.min.js"></script>
+  <script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
   <script src="lib/underscore/underscore-min.js"></script>
   <script src="lib/js-yaml/dist/js-yaml.min.js"></script>
   <script src="lib/oauth-js/dist/oauth.js"></script>
@@ -34,6 +35,13 @@
                 ng-mouseleave="mouseleave($index)"
             >
               {{ melt.name }}
+            </li>
+            <li ng-show="results.length == 0 && query.length > 3 && github">
+              <button ng-click="start_add()"
+                      class="btn btn-success"
+                      style="width:100%;">
+                Add "{{ query }}" to your fork!
+              </button>
             </li>
           </ul>
         </div>
