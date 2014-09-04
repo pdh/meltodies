@@ -1,0 +1,61 @@
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+pre {
+  border: 0 none;
+  background: -webkit-linear-gradient(#fafaff, white); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#fafaff, white); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#fafaff, white); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#fafaff, white); /* Standard syntax (must be last) */
+}
+.search-results {
+   position:absolute;
+   z-index: 1;
+   background-color: rgba(255, 255, 255, 0.9);
+   width: 90%;
+   margin-top: 0em;
+   border-bottom-left-radius: .618em;
+   border-bottom-right-radius: .618em;
+   padding-left: .5em;
+}
+.selected {background: yellow;}
+
+.opacity {
+  filter: alpha(opacity=80);
+  opacity: 0.8;
+}
+.song-meta-container {
+  padding: 3px;
+}
+
+.song {
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+  -webkit-column-rule: 1px outset #ff00ff;
+  -moz-column-rule: 1px outset #ff00ff;
+  column-rule: 1px outset #ff00ff;
+}
+
+.song pre {
+  /* break-word makes it too confusing with chords ... hrm ... */
+  word-wrap: normal;
+  overflow: unset; /* fix for moz */
+}
+
+@media screen and (max-width: 580px) {
+  .song pre {
+    font-size: 85%;
+  }
+}
+
+.tube-container {
+  position:absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: -10;
+}
