@@ -26,5 +26,9 @@
     {
         "name": "Mamas Don't Let Your Babies Grow Up To Be Cowboys",
         "file": "melts/mamas_dont_let_your_babies_grow_up_to_be_cowboys.melt"
+    },
+    {
+        "name": "Highwayman",
+        "file": "melts/highwayman.melt"
     }
 ]
