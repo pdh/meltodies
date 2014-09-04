@@ -119,9 +119,9 @@ MeltController = ($scope, $http, $sce, $modal) ->
       url: datum.file
     ).success (data) ->
       # still set it to know if we are going to show it :D
-      if data.indexOf('---') > -1
-        $scope.song_meta = '---\n' + data.split('---')[1]
-        $scope.song_data = data.split('---')[2]
+      if data.indexOf('===') > -1
+        $scope.song_meta = '---\n' + data.split('===')[1]
+        $scope.song_data = data.split('===')[2]
         try
             metal = jsyaml.load($scope.song_meta)
             $scope.tube_id = metal.tube_id
