@@ -1,8 +1,20 @@
 'use strict'
 
-window.MeltApp = angular.module 'MeltApp', ['ui.utils']
+window.MeltApp = angular.module 'MeltApp', ['ui.utils', 'ui.bootstrap']
 
-MeltController = ($scope, $http, $sce) ->
+
+song_template = (scp) ->
+  """
+---
+title: #{scp.title}
+author: #{scp.author}
+tube_id: #{scp.tube_id}
+---
+#{scp.song_data}
+  """
+
+
+MeltController = ($scope, $http, $sce, $modal) ->
   window.scope = $scope
   $scope.results = []
   $scope.ready_to_select = -1
@@ -16,6 +28,7 @@ MeltController = ($scope, $http, $sce) ->
     $scope.data = data
     #$scope.names = (___.name for ___ in data)
 
+  # search
   $scope.query_change = ->
     #clearTimeout($scope.timeout)
     if $scope.query.length < 3
@@ -97,7 +110,6 @@ MeltController = ($scope, $http, $sce) ->
     $scope.ready_to_select = idx
   $scope.mouseleave = (idx) ->
     $scope.ready_to_select = -1
-
   $scope.select = (datum) ->
     #console.log datum
     $scope.query = ""
@@ -128,7 +140,6 @@ MeltController = ($scope, $http, $sce) ->
       _setColumnWidth Math.round(_.max(scope.song_data.split("\n")).length * .69)
       document.getElementById('song-meta').innerHTML = $scope.song_meta
       document.getElementById('pre-song').innerHTML = $scope.song_data
-
     _setColumnWidth = (column_width) ->
       els = document.querySelectorAll(".song")
       w = column_width + "em"
@@ -137,6 +148,7 @@ MeltController = ($scope, $http, $sce) ->
         el.style["-moz-column-width"] = w
         el.style["column-width"] = w
 
+  # Github
   OAuth.initialize 'suDFbLhBbbZAzBRH-CFx5WBoQLU'
   $scope.login = () ->
     OAuth.popup 'github', $scope.loginCallback
@@ -147,13 +159,94 @@ MeltController = ($scope, $http, $sce) ->
       auth: "oauth"
     }
     $scope.$apply()
-    u = gh.getUser()
-    u.follow "pdh"
-    u.follow "skyl"
-    u.putStar "pdh", "meltodies"
-    repo = gh.getRepo "pdh", "meltodies"
-    repo.fork()
+
+    $scope.user = gh.getUser()
+    $scope.user.getInfo().then (d) ->
+      $scope.userInfo = d
+    $scope.user.follow "pdh"
+    $scope.user.follow "skyl"
+    $scope.user.putStar "pdh", "meltodies"
+    $scope.upstream_repo = gh.getRepo "pdh", "meltodies"
+    $scope.upstream_repo.fork()
+
+  # add song
+  $scope.start_add = () ->
+    query = $scope.query
+    modalInstance = $modal.open
+      templateUrl: 'addSongModal.html'
+      controller: AddSongModalCtrl
+      size: 'lg',
+      resolve:
+        title: () ->
+          $scope.query
+
+    complete = (data) ->
+      # TODO - people can make illegal titles?
+      branchname = data.title.toLowerCase().replace /\ /g, '_'
+      filename = "#{branchname}.melt"
+      file = song_template(data)
+      user_repo = $scope.github.getRepo $scope.userInfo.login, "meltodies"
+      master = user_repo.getBranch('master')
+      path = "melts/#{filename}"
+
+      master.read("songs.json").then (songs) ->
+        songs = JSON.parse songs.content
+        songs.push
+          name: data.title
+          file: path
+        changes = {}
+        changes["songs.json"] = JSON.stringify songs, null, 4
+        changes[path] = file
+
+        _onBranch = (a, b, c) ->
+          branch = user_repo.getBranch(branchname)
+
+          branch.writeMany(changes, "add #{data.title}").then(
+            (() ->
+              $scope.upstream_repo.createPullRequest
+                "title": "add #{data.title}"
+                "head": "#{$scope.userInfo.login}:#{branchname}"
+                "base": "master"
+            ),
+            ((a, b, c) ->
+              console.log "FAILED TO CREATE createPullRequest!", a, b, c
+            )
+          )
+          $scope.query = ""
+          $scope.$apply()
+
+        # we try to create the branch
+        # we assume that the failure is b/c we already have the branch created
+        # so, pass or fail, we do the same thing -
+        # write the file and make the pull request.
+        master.createBranch(branchname).then _onBranch, _onBranch
+
+    dimissed = () ->
+      console.log "DISMIESSED!"
+
+    modalInstance.result.then complete, dimissed
 
 
-MeltController.$inject = ['$scope', '$http', '$sce']
+
+AddSongModalCtrl = ($scope, $modalInstance, title) ->
+  # wtf, bro
+  # http://stackoverflow.com/a/22172612/177293
+  # http://stackoverflow.com/q/18716113/177293
+  window.modal_scope = $scope
+  $scope.data =
+    title: title
+    author: null
+    tube_id: null
+    song_data: null
+
+  # TODO - validation
+
+  $scope.ok = () ->
+    $modalInstance.close($scope.data)
+
+  $scope.cancel = () ->
+    $modalInstance.dismiss('cancel')
+
+
+MeltController.$inject = ['$scope', '$http', '$sce', '$modal']
 angular.module('MeltApp').controller 'MeltController', MeltController
