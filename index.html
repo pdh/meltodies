@@ -29,7 +29,7 @@
           <ul id="search-list">
             <li
                 ng-repeat="melt in results"
-                ng-click="select(melt.file)"
+                ng-click="select(melt)"
                 ng-class="{'selected': $index == ready_to_select}"
                 ng-mouseover="mouseover($index)"
                 ng-mouseleave="mouseleave($index)"

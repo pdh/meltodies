@@ -111,7 +111,6 @@ MeltController = ($scope, $http, $sce, $modal) ->
   $scope.mouseleave = (idx) ->
     $scope.ready_to_select = -1
   $scope.select = (datum) ->
-    #console.log datum
     $scope.query = ""
     $scope.results = []
     $scope.selected = datum
