@@ -34,5 +34,9 @@
     {
         "name": "This Land Is Your Land",
         "file": "melts/this_land_is_your_land.melt"
+    },
+    {
+        "name": "Cripple Creek Ferry",
+        "file": "melts/cripple_creek_ferry.melt"
     }
 ]
