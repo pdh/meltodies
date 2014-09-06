@@ -1,7 +1,8 @@
+#!/usr/bin/env python
+
 import os
 import json
 import yaml
-
 
 songs = []
 
@@ -10,7 +11,6 @@ for melt in os.listdir("melts/"):
         continue
     fn = "melts/%s" % melt
     with open(fn) as f:
-        print(fn)
         txt = f.read()
         meta = txt.split("===")[1]
         meta = yaml.load(meta)
@@ -19,6 +19,3 @@ for melt in os.listdir("melts/"):
 
 with open("songs.json", "w") as f:
     f.write(json.dumps(songs, indent=4))
-
-import IPython; IPython.embed()
-
