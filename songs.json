@@ -71,5 +71,9 @@
     {
         "name": "King of the Road",
         "file": "melts/king_of_the_road.melt"
+    },
+    {
+        "name": "Mama Tried",
+        "file": "melts/mama_tried.melt"
     }
 ]
