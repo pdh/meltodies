@@ -26,7 +26,6 @@ MeltController = ($scope, $http, $sce, $modal) ->
     url: "/songs.json"
   ).success (data) ->
     $scope.data = data
-    #$scope.names = (___.name for ___ in data)
 
   # search
   $scope.query_change = ->
@@ -47,7 +46,7 @@ MeltController = ($scope, $http, $sce, $modal) ->
     window.filterf = (datum) ->
       #console.log datum
       for word in words
-        if datum.name.toLowerCase().indexOf(word.toLowerCase()) < 0
+        if datum.title.toLowerCase().indexOf(word.toLowerCase()) < 0
           return false
       true
     #console.log $scope.data
@@ -188,37 +187,30 @@ MeltController = ($scope, $http, $sce, $modal) ->
       master = user_repo.getBranch('master')
       path = "melts/#{filename}"
 
-      master.read("songs.json").then (songs) ->
-        songs = JSON.parse songs.content
-        songs.push
-          name: data.title
-          file: path
-        changes = {}
-        changes["songs.json"] = JSON.stringify songs, null, 4
-        changes[path] = file
-
-        _onBranch = (a, b, c) ->
-          branch = user_repo.getBranch(branchname)
-
-          branch.writeMany(changes, "add #{data.title}").then(
-            (() ->
-              $scope.upstream_repo.createPullRequest
-                "title": "add #{data.title}"
-                "head": "#{$scope.userInfo.login}:#{branchname}"
-                "base": "master"
-            ),
-            ((a, b, c) ->
-              console.log "FAILED TO CREATE createPullRequest!", a, b, c
-            )
+      changes = {}
+      changes[path] = file
+      # just one file? ok.
+      _onBranch = (a, b, c) ->
+        branch = user_repo.getBranch(branchname)
+        branch.writeMany(changes, "add #{data.title}").then(
+          (() ->
+            $scope.upstream_repo.createPullRequest
+              "title": "add #{data.title}"
+              "head": "#{$scope.userInfo.login}:#{branchname}"
+              "base": "master"
+          ),
+          ((a, b, c) ->
+            console.log "FAILED TO CREATE createPullRequest!", a, b, c
           )
-          $scope.query = ""
-          $scope.$apply()
+        )
+        $scope.query = ""
+        $scope.$apply()
 
-        # we try to create the branch
-        # we assume that the failure is b/c we already have the branch created
-        # so, pass or fail, we do the same thing -
-        # write the file and make the pull request.
-        master.createBranch(branchname).then _onBranch, _onBranch
+      # we try to create the branch
+      # we assume that the failure is b/c we already have the branch created
+      # so, pass or fail, we do the same thing -
+      # write the file and make the pull request.
+      master.createBranch(branchname).then _onBranch, _onBranch
 
     dimissed = () ->
       console.log "DISMIESSED!"

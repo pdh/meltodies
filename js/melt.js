@@ -37,7 +37,7 @@
         var word, _i, _len;
         for (_i = 0, _len = words.length; _i < _len; _i++) {
           word = words[_i];
-          if (datum.name.toLowerCase().indexOf(word.toLowerCase()) < 0) {
+          if (datum.title.toLowerCase().indexOf(word.toLowerCase()) < 0) {
             return false;
           }
         }
@@ -181,40 +181,31 @@
         }
       });
       complete = function(data) {
-        var branchname, file, filename, master, path, user_repo;
+        var branchname, changes, file, filename, master, path, user_repo, _onBranch;
         branchname = data.title.toLowerCase().replace(/\ /g, '_');
         filename = "" + branchname + ".melt";
         file = song_template(data);
         user_repo = $scope.github.getRepo($scope.userInfo.login, "meltodies");
         master = user_repo.getBranch('master');
         path = "melts/" + filename;
-        return master.read("songs.json").then(function(songs) {
-          var changes, _onBranch;
-          songs = JSON.parse(songs.content);
-          songs.push({
-            name: data.title,
-            file: path
-          });
-          changes = {};
-          changes["songs.json"] = JSON.stringify(songs, null, 4);
-          changes[path] = file;
-          _onBranch = function(a, b, c) {
-            var branch;
-            branch = user_repo.getBranch(branchname);
-            branch.writeMany(changes, "add " + data.title).then((function() {
-              return $scope.upstream_repo.createPullRequest({
-                "title": "add " + data.title,
-                "head": "" + $scope.userInfo.login + ":" + branchname,
-                "base": "master"
-              });
-            }), (function(a, b, c) {
-              return console.log("FAILED TO CREATE createPullRequest!", a, b, c);
-            }));
-            $scope.query = "";
-            return $scope.$apply();
-          };
-          return master.createBranch(branchname).then(_onBranch, _onBranch);
-        });
+        changes = {};
+        changes[path] = file;
+        _onBranch = function(a, b, c) {
+          var branch;
+          branch = user_repo.getBranch(branchname);
+          branch.writeMany(changes, "add " + data.title).then((function() {
+            return $scope.upstream_repo.createPullRequest({
+              "title": "add " + data.title,
+              "head": "" + $scope.userInfo.login + ":" + branchname,
+              "base": "master"
+            });
+          }), (function(a, b, c) {
+            return console.log("FAILED TO CREATE createPullRequest!", a, b, c);
+          }));
+          $scope.query = "";
+          return $scope.$apply();
+        };
+        return master.createBranch(branchname).then(_onBranch, _onBranch);
       };
       dimissed = function() {
         return console.log("DISMIESSED!");

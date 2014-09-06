@@ -1,42 +1,67 @@
 [
     {
-        "name": "Me and Bobby McGee",
-        "file": "melts/bobby_mcgee.melt"
+        "author": "Harry McClintock?",
+        "file": "melts/big_rock_candy_moutain.melt",
+        "tube_id": "JqowmHgxVJQ",
+        "title": "Big Rock Candy Mountains"
     },
     {
-        "name": "Early Morning Rain",
-        "file": "melts/early_morning_rain.melt"
+        "author": "Kris Kristofferson",
+        "file": "melts/bobby_mcgee.melt",
+        "tube_id": "G-J7mLyD3yc",
+        "title": "Me and Bobby McGee"
     },
     {
-        "name": "Hang Me, Oh Hang Me",
-        "file": "melts/hang_me_oh_hang_me.melt"
+        "author": "Neil Young",
+        "file": "melts/cripple_creek_ferry.melt",
+        "tube_id": "YzB29hqvj2s",
+        "title": "Cripple Creek Ferry"
     },
     {
-        "name": "Pancho and Lefty",
-        "file": "melts/pancho_and_lefty.melt"
+        "author": "Jagger/Richards, The Rolling Stones",
+        "file": "melts/dead_flowers.melt",
+        "tube_id": "8YRdxHHFKvQ",
+        "title": "Dead Flowers"
     },
     {
-        "name": "Big Rock Candy Mountain",
-        "file": "melts/big_rock_candy_moutain.melt"
+        "author": "Gordon Lightfood",
+        "file": "melts/early_morning_rain.melt",
+        "tube_id": "KP_MDIYhPH0",
+        "title": "Early Morning Rain"
     },
     {
-        "name": "Dead Flowers",
-        "file": "melts/dead_flowers.melt"
+        "author": "Dave Van Ronk",
+        "file": "melts/hang_me_oh_hang_me.melt",
+        "tube_id": "Wa0xDq4_iT0",
+        "title": "Hang Me, Oh Hang Me"
     },
     {
-        "name": "Mamas Don't Let Your Babies Grow Up To Be Cowboys",
-        "file": "melts/mamas_dont_let_your_babies_grow_up_to_be_cowboys.melt"
+        "author": "Ed and Patsy Bruce",
+        "file": "melts/mamas_dont_let_your_babies_grow_up_to_be_cowboys.melt",
+        "tube_id": "BIan1LDa3hU",
+        "title": "Mamas Don't Let Your Babies Grow up to be Cowboys"
     },
     {
-        "name": "The Door is Always Open",
-        "file": "melts/the_door_is_always_open.melt"
+        "author": "Robbie Robertson, The Band",
+        "file": "melts/night_they_drove_old_dixie_down.melt",
+        "tube_id": "jREUrbGGrgM",
+        "title": "The Night They Drove Old Dixie Down"
     },
     {
-        "name": "This Land Is Your Land",
-        "file": "melts/this_land_is_your_land.melt"
+        "file": "melts/pancho_and_lefty.melt",
+        "title": "Pancho and Lefty",
+        "tube_id": "JxzJAF1BxP4"
     },
     {
-        "name": "Cripple Creek Ferry",
-        "file": "melts/cripple_creek_ferry.melt"
+        "author": "Waylon Jennings",
+        "file": "melts/the_door_is_always_open.melt",
+        "tube_id": "500KtCmJPV4",
+        "title": "The Door is Always Open"
+    },
+    {
+        "author": "Wanda Jackson",
+        "file": "melts/this_land_is_your_land.melt",
+        "tube_id": "wxiMrvDbq3s",
+        "title": "This Land Is Your Land"
     }
 ]
