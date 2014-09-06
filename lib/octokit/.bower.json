@@ -1,0 +1,22 @@
+{
+  "name": "octokit",
+  "description": "Javascript github client for nodejs or a web browser using promises",
+  "main": "octokit.js",
+  "dependencies": {
+    "blanket": "#development",
+    "mocha": "~1.16.2"
+  },
+  "devDependencies": {
+    "coffee-script": ">=1.3"
+  },
+  "homepage": "https://github.com/skyl/octokit.js",
+  "_release": "master",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "49b6fadf469c5e2c3eb701b5e82221a535ac6c16"
+  },
+  "_source": "https://github.com/skyl/octokit.js.git",
+  "_target": "master",
+  "_originalSource": "https://github.com/skyl/octokit.js.git"
+}
