@@ -17,7 +17,7 @@
     $scope.selected = null;
     $http({
       method: "GET",
-      url: "/songs.json"
+      url: "songs.json"
     }).success(function(data) {
       return $scope.data = data;
     });
