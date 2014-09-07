@@ -28,7 +28,16 @@ MeltController = ($scope, $http, $sce, $modal) ->
     $scope.data = data
 
   # search
+  started = false
   $scope.update_results = ->
+    if not started
+      s = d3.select(".start")
+      # more duration once this gets worked out.
+      # http://stackoverflow.com/q/25714744/177293
+      s.transition().duration(100)
+          .style("margin-top", "1%")
+      started = true
+
     document.getElementById('search-list').scrollTop = 0
     $scope.ready_to_select = -1
 
