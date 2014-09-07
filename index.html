@@ -17,11 +17,13 @@
   <div ng-controller="MeltController" class="container-fluid">
     <div class="row">
       <div class="col-md-6">
-        <input class="input-lg"
+        <input
+          id="search"
+          class="input-lg"
           style="z-index:10; width:100%"
           type="text"
           ng-model="query"
-          ng-change="query_change()"
+          ng-change="update_results()"
           ui-keydown="{'enter down up esc': 'query_key($event)'}"
           placeholder="Search for Songs"
         >

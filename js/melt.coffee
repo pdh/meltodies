@@ -28,36 +28,21 @@ MeltController = ($scope, $http, $sce, $modal) ->
     $scope.data = data
 
   # search
-  $scope.query_change = ->
-    #clearTimeout($scope.timeout)
-    if $scope.query.length < 3
-      $scope.results = []
-      return
-    #$scope.timeout = setTimeout $scope.update_results, 800
-    $scope.update_results()
-
   $scope.update_results = ->
-    #console.log "update_results!"
     document.getElementById('search-list').scrollTop = 0
     $scope.ready_to_select = -1
 
     words = $scope.query.split(' ')
-    #console.log words
     window.filterf = (datum) ->
-      #console.log datum
       for word in words
         if datum.title.toLowerCase().indexOf(word.toLowerCase()) < 0
           return false
       true
-    #console.log $scope.data
     res = _.filter($scope.data, filterf)
-    #console.log res
     $scope.results = res
-    #$scope.$apply()
     return
 
   $scope.query_key = ($event) ->
-    #console.log "query_key!"
     $event.preventDefault()
     can_up = $scope.ready_to_select > 0
     can_down = $scope.ready_to_select < $scope.results.length - 1
@@ -135,7 +120,7 @@ MeltController = ($scope, $http, $sce, $modal) ->
         $scope.song_meta = null
         $scope.song_data = data
 
-      _setColumnWidth Math.round(_.max(scope.song_data.split("\n")).length * .69)
+      _setColumnWidth Math.round(_.max(scope.song_data.split("\n")).length)
       document.getElementById('song-meta').innerHTML = $scope.song_meta
       document.getElementById('pre-song').innerHTML = $scope.song_data
     _setColumnWidth = (column_width) ->
@@ -217,6 +202,8 @@ MeltController = ($scope, $http, $sce, $modal) ->
 
     modalInstance.result.then complete, dimissed
 
+  # on load
+  document.getElementById("search").focus()
 
 
 AddSongModalCtrl = ($scope, $modalInstance, title) ->
