@@ -26,10 +26,11 @@ pre {
   filter: alpha(opacity=80);
   opacity: 0.8;
 }
-.song-meta-container {
-  padding: 3px;
-}
 
+
+.song-meta-container {
+  padding-left: 15px;
+}
 .song {
   -webkit-column-count: 3;
   -moz-column-count: 3;
@@ -37,12 +38,15 @@ pre {
   -webkit-column-rule: 1px outset #ff00ff;
   -moz-column-rule: 1px outset #ff00ff;
   column-rule: 1px outset #ff00ff;
+  /* make it like col-md .. */
+  padding-left: 15px;
 }
 
 .song pre {
   /* break-word makes it too confusing with chords ... hrm ... */
   word-wrap: normal;
   overflow: unset; /* fix for moz */
+  padding-left: 15px;
 }
 
 @media screen and (max-width: 580px) {

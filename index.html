@@ -56,18 +56,20 @@
         </button>
       </div>
     </div><!-- row #start -->
-    <div class="song-meta-container" ng-show="song_meta">
-      <pre id="song-meta"></pre>
-    </div>
-    <div class="song" ng-show="song_data">
-      <!-- if contenteditable, angular gets it messed up, so we set directly -->
-      <pre id="pre-song" contenteditable="true"></pre>
-    </div>
-    <div class="tube-container" ng-show="tube_url">
-      <iframe id="ytplayer" type="text/html" width="300" height="195"
+    <div class="row song-meta-container" ng-show="song_meta">
+      <pre class="col-md-6" id="song-meta"></pre>
+      <div class="col-md-6 tube-container" ng-show="tube_url">
+        <iframe id="ytplayer" type="text/html" width="213" height="120"
               allowfullscreen="true"
               ng-src="{{ tube_url }}"
-              frameborder="0"/>
+              frameborder="0"></iframe>
+      </div>
+    </div>
+    <div class="row">
+      <div class="song" ng-show="song_data">
+      <!-- if contenteditable, angular gets it messed up, so we set directly -->
+        <pre id="pre-song" contenteditable="true"></pre>
+      </div>
     </div>
   </div><!-- MeltController -->
 </body>
