@@ -10,6 +10,7 @@
   };
 
   MeltController = function($scope, $http, $sce, $modal) {
+    var started;
     window.scope = $scope;
     $scope.results = [];
     $scope.ready_to_select = -1;
@@ -21,15 +22,14 @@
     }).success(function(data) {
       return $scope.data = data;
     });
-    $scope.query_change = function() {
-      if ($scope.query.length < 3) {
-        $scope.results = [];
-        return;
-      }
-      return $scope.update_results();
-    };
+    started = false;
     $scope.update_results = function() {
-      var res, words;
+      var res, s, words;
+      if (!started) {
+        s = d3.select(".start");
+        s.transition().duration(100).style("margin-top", "1%");
+        started = true;
+      }
       document.getElementById('search-list').scrollTop = 0;
       $scope.ready_to_select = -1;
       words = $scope.query.split(' ');
@@ -128,7 +128,7 @@
           $scope.song_meta = null;
           $scope.song_data = data;
         }
-        _setColumnWidth(Math.round(_.max(scope.song_data.split("\n")).length * .69));
+        _setColumnWidth(Math.round(_.max(scope.song_data.split("\n")).length));
         document.getElementById('song-meta').innerHTML = $scope.song_meta;
         return document.getElementById('pre-song').innerHTML = $scope.song_data;
       });
@@ -167,7 +167,7 @@
       $scope.upstream_repo = gh.getRepo("pdh", "meltodies");
       return $scope.upstream_repo.fork();
     };
-    return $scope.start_add = function() {
+    $scope.start_add = function() {
       var complete, dimissed, modalInstance, query;
       query = $scope.query;
       modalInstance = $modal.open({
@@ -212,6 +212,7 @@
       };
       return modalInstance.result.then(complete, dimissed);
     };
+    return document.getElementById("search").focus();
   };
 
   AddSongModalCtrl = function($scope, $modalInstance, title) {
