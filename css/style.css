@@ -2,6 +2,7 @@ ul {
   padding: 0;
   margin: 0;
   list-style-type: none;
+  white-space: nowrap;
 }
 pre {
   border: 0 none;
@@ -11,23 +12,26 @@ pre {
   background: linear-gradient(#fafaff, white); /* Standard syntax (must be last) */
 }
 .search-results {
-   position:absolute;
-   z-index: 1;
-   background-color: rgba(255, 255, 255, 0.9);
-   width: 90%;
-   margin-top: 0em;
-   border-bottom-left-radius: .618em;
-   border-bottom-right-radius: .618em;
-   padding-left: .5em;
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  margin-top: 0em;
+  padding-right: 30px;
 }
-.selected {background: yellow;}
+#search-list { }
+#search-list li {
+  font-size: 130%;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+#search-list li span {
+  padding-left: 15px;
+}
+#search-list li.selected {background: yellow;}
 
 .opacity {
   filter: alpha(opacity=80);
   opacity: 0.8;
 }
-
-
 .song-meta-container {
   padding-left: 15px;
 }

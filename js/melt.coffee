@@ -50,7 +50,7 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
     for d in $scope.data
       if d.title.toLowerCase() == title.toLowerCase()
         $scope.select d
-    $scope.$apply()
+    #$scope.$apply()
 
   $scope.update_results = ->
     if not started
@@ -149,7 +149,9 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
         $scope.song_meta = null
         $scope.song_data = data
 
-      _setColumnWidth Math.round(_.max(scope.song_data.split("\n")).length)
+      $scope.song_data = $scope.song_data.trim()
+
+      _setColumnWidth Math.round(_.max($scope.song_data.split("\n")).length * 1.25)
       document.getElementById('song-meta').innerHTML = $scope.song_meta
       document.getElementById('pre-song').innerHTML = $scope.song_data
     _setColumnWidth = (column_width) ->
@@ -165,6 +167,7 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
   $scope.login = () ->
     OAuth.popup 'github', $scope.loginCallback
   $scope.loginCallback = (err, github_data) ->
+    console.log err, github_data
     $scope.github_access_token = github_data.access_token
     window.gh = $scope.github = new Github {
       token: $scope.github_access_token,
