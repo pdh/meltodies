@@ -39,17 +39,20 @@
       return $scope.onLoad();
     });
     $scope.onLoad = function() {
-      var d, title, _i, _len, _ref;
+      var d, title, _i, _len, _ref, _results;
       document.getElementById("search").focus();
       title = $location.path().split('/')[1];
       _ref = $scope.data;
+      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         d = _ref[_i];
         if (d.title.toLowerCase() === title.toLowerCase()) {
-          $scope.select(d);
+          _results.push($scope.select(d));
+        } else {
+          _results.push(void 0);
         }
       }
-      return $scope.$apply();
+      return _results;
     };
     $scope.update_results = function() {
       var res, words;
@@ -155,7 +158,8 @@
           $scope.song_meta = null;
           $scope.song_data = data;
         }
-        _setColumnWidth(Math.round(_.max(scope.song_data.split("\n")).length));
+        $scope.song_data = $scope.song_data.trim();
+        _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * 1.25));
         document.getElementById('song-meta').innerHTML = $scope.song_meta;
         return document.getElementById('pre-song').innerHTML = $scope.song_data;
       });
@@ -178,6 +182,7 @@
       return OAuth.popup('github', $scope.loginCallback);
     };
     $scope.loginCallback = function(err, github_data) {
+      console.log(err, github_data);
       $scope.github_access_token = github_data.access_token;
       window.gh = $scope.github = new Github({
         token: $scope.github_access_token,
