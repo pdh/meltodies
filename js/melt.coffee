@@ -13,8 +13,21 @@ tube_id: #{scp.tube_id}
 #{scp.song_data}
   """
 
+# search
+started = false
+transition_search_input = (duration=100) ->
+  s = d3.select(".start")
+  # more duration once this gets worked out.
+  # http://stackoverflow.com/q/25714744/177293
+  s.transition().duration(duration)
+      .style("margin-top", "1%")
+  started = true
 
-MeltController = ($scope, $http, $sce, $modal) ->
+
+MeltController = ($scope, $http, $sce, $modal, $location) ->
+  window.l = $location
+  if $location.path()
+    transition_search_input 0
   window.scope = $scope
   $scope.results = []
   $scope.ready_to_select = -1
@@ -25,18 +38,23 @@ MeltController = ($scope, $http, $sce, $modal) ->
     method: "GET"
     url: "/songs.json"
   ).success (data) ->
+    # scope.data is songs.json
     $scope.data = data
+    $scope.onLoad()
 
-  # search
-  started = false
+  $scope.onLoad = () ->
+    # called when songs.json == data comes back
+    document.getElementById("search").focus()
+    # angular way to get path without / ?
+    title = $location.path().split('/')[1]
+    for d in $scope.data
+      if d.title.toLowerCase() == title.toLowerCase()
+        $scope.select d
+    $scope.$apply()
+
   $scope.update_results = ->
     if not started
-      s = d3.select(".start")
-      # more duration once this gets worked out.
-      # http://stackoverflow.com/q/25714744/177293
-      s.transition().duration(100)
-          .style("margin-top", "1%")
-      started = true
+      transition_search_input()
 
     document.getElementById('search-list').scrollTop = 0
     $scope.ready_to_select = -1
@@ -122,9 +140,11 @@ MeltController = ($scope, $http, $sce, $modal) ->
               $scope.tube_url = $sce.trustAsResourceUrl(
                 "http://www.youtube.com/embed/#{$scope.tube_id}"
               )
+            $location.path metal.title
         catch error
             # errrandle!
             console.log error
+      # we should just require meta and the correct format?
       else
         $scope.song_meta = null
         $scope.song_data = data
@@ -211,9 +231,6 @@ MeltController = ($scope, $http, $sce, $modal) ->
 
     modalInstance.result.then complete, dimissed
 
-  # on load
-  document.getElementById("search").focus()
-
 
 AddSongModalCtrl = ($scope, $modalInstance, title) ->
   # wtf, bro
@@ -235,5 +252,5 @@ AddSongModalCtrl = ($scope, $modalInstance, title) ->
     $modalInstance.dismiss('cancel')
 
 
-MeltController.$inject = ['$scope', '$http', '$sce', '$modal']
+MeltController.$inject = ['$scope', '$http', '$sce', '$modal', '$location']
 angular.module('MeltApp').controller 'MeltController', MeltController

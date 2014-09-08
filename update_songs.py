@@ -18,4 +18,9 @@ for melt in os.listdir("melts/"):
         songs.append(meta)
 
 with open("songs.json", "w") as f:
-    f.write(json.dumps(songs, indent=4))
+    f.write(
+        json.dumps(
+            sorted(songs, key=lambda d: d["title"]),
+            separators=(',', ':')
+        )
+    )
