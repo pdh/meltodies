@@ -27,6 +27,7 @@
           ng-change="update_results()"
           ui-keydown="{'enter down up esc': 'query_key($event)'}"
           placeholder="Search for Songs"
+          autocomplete="off"
         >
         <div class="search-results">
           <ul id="search-list">
@@ -58,11 +59,7 @@
     </div><!-- row #start -->
     <div class="row song-meta-container" ng-show="song_meta">
       <pre class="col-md-6" id="song-meta"></pre>
-      <div class="col-md-6 tube-container" ng-show="tube_url">
-        <iframe id="ytplayer" type="text/html" width="213" height="120"
-              allowfullscreen="true"
-              ng-src="{{ tube_url }}"
-              frameborder="0"></iframe>
+      <div class="col-md-6" id="tube-container" ng-show="tube_id">
       </div>
     </div>
     <div class="row">
