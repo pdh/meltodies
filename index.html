@@ -8,6 +8,7 @@
   <script src="lib/js-yaml/dist/js-yaml.min.js"></script>
   <script src="lib/oauth-js/dist/oauth.js"></script>
   <script src="lib/octokit/octokit.js"></script>
+  <script src="lib/d3/d3.min.js"></script>
   <script src="js/melt.js"></script>
 
   <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css">
@@ -15,13 +16,15 @@
 </head>
 <body ng-app="MeltApp">
   <div ng-controller="MeltController" class="container-fluid">
-    <div class="row">
-      <div class="col-md-6">
-        <input class="input-lg"
+    <div class="row start" style="margin-top:23%;margin-bottom:0.5em;">
+      <div class="col-md-8">
+        <input
+          id="search"
+          class="input-lg"
           style="z-index:10; width:100%"
           type="text"
           ng-model="query"
-          ng-change="query_change()"
+          ng-change="update_results()"
           ui-keydown="{'enter down up esc': 'query_key($event)'}"
           placeholder="Search for Songs"
         >
@@ -46,24 +49,27 @@
           </ul>
         </div>
       </div>
-      <div class="col-md-6" ng-show="!github">
+      <div class="col-md-4" ng-show="!github">
         <button ng-click="login()" class="btn btn-primary">
           <img src="img/octocat.png" />
           Connect with Github
         </button>
       </div>
-    </div><!-- row -->
-    <div class="song-meta-container" ng-show="song_meta">
-      <pre id="song-meta"></pre>
-    </div>
-    <div class="song" ng-show="song_data">
-      <!-- if contenteditable, angular gets it messed up, so we set directly -->
-      <pre id="pre-song" contenteditable="true"></pre>
-    </div>
-    <div class="tube-container" ng-show="tube_url">
-      <iframe id="ytplayer" type="text/html" width="300" height="195"
+    </div><!-- row #start -->
+    <div class="row song-meta-container" ng-show="song_meta">
+      <pre class="col-md-6" id="song-meta"></pre>
+      <div class="col-md-6 tube-container" ng-show="tube_url">
+        <iframe id="ytplayer" type="text/html" width="213" height="120"
+              allowfullscreen="true"
               ng-src="{{ tube_url }}"
-              frameborder="0"/>
+              frameborder="0"></iframe>
+      </div>
+    </div>
+    <div class="row">
+      <div class="song" ng-show="song_data">
+      <!-- if contenteditable, angular gets it messed up, so we set directly -->
+        <pre id="pre-song" contenteditable="true"></pre>
+      </div>
     </div>
   </div><!-- MeltController -->
 </body>
