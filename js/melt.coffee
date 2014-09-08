@@ -13,6 +13,17 @@ tube_id: #{scp.tube_id}
 #{scp.song_data}
   """
 
+
+# so changing YT doesn't affect back button,
+# we just destroy and replace
+youtube_iframe_template = (src) ->
+  """
+<iframe id="ytplayer" type="text/html" width="213" height="120"
+    allowfullscreen="true"
+    src="#{src}"
+    frameborder="0"></iframe>
+  """
+
 # search
 started = false
 transition_search_input = (duration=100) ->
@@ -47,10 +58,16 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
     document.getElementById("search").focus()
     # angular way to get path without / ?
     title = $location.path().split('/')[1]
-    for d in $scope.data
-      if d.title.toLowerCase() == title.toLowerCase()
-        $scope.select d
-    #$scope.$apply()
+    $scope.select_title title
+
+  $scope.select_title = (title) ->
+    if title isnt undefined and $scope.data isnt undefined
+      for d in $scope.data
+        if d.title.toLowerCase() == title.toLowerCase()
+          $scope.select d
+
+  $scope.$on '$locationChangeSuccess', (scope, next, current) ->
+    $scope.select_title $location.path().split('/')[1]
 
   $scope.update_results = ->
     if not started
@@ -136,11 +153,18 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
         try
             metal = jsyaml.load($scope.song_meta)
             $scope.tube_id = metal.tube_id
+
             if $scope.tube_id
-              $scope.tube_url = $sce.trustAsResourceUrl(
+              # we have to replace the iframe so it doesn't mess up
+              # our back button hotness.
+              ytel = document.getElementById("tube-container")
+              ytel.innerHTML = youtube_iframe_template(
                 "http://www.youtube.com/embed/#{$scope.tube_id}"
               )
+
+            #if $location.path() isnt metal.title
             $location.path metal.title
+
         catch error
             # errrandle!
             console.log error
