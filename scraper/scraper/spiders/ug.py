@@ -9,8 +9,7 @@ from yt import get_top_id
 #from scraper.items import ScraperItem
 
 
-file_template = u"""
-===
+file_template = u"""===
 title: {title}
 version: {version}
 author: {author}
