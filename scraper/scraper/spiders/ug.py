@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-import random
 import re
+import random
+import codecs
 import scrapy
 
 from yt import get_top_id
@@ -80,7 +81,7 @@ class UgSpider(scrapy.Spider):
                     version=version,
                 )
 
-                with open(filepath, "w") as f:
+                with codecs.open(filepath, "w", encoding="utf-8") as f:
                     f.write(file_text)
                 #print file_text
                 #yield ScraperItem(content=content)
