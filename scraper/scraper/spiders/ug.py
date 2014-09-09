@@ -6,7 +6,7 @@ import codecs
 import scrapy
 
 from yt import get_top_id
-from scraper.items import ScraperItem
+#from scraper.items import ScraperItem
 
 
 file_template = u"""
@@ -71,7 +71,6 @@ class UgSpider(scrapy.Spider):
                 content = re.sub('<[^<]+?>', '', raw[0])
                 content = content.replace(r'\r\n', r'\n')
                 tube_id = get_top_id("%s %s" % (self.artist, otitle))
-                #import IPython; IPython.embed()
                 file_text = file_template.format(
                     title=otitle,
                     author=author,
