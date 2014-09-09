@@ -38,7 +38,7 @@
                 ng-mouseover="mouseover($index)"
                 ng-mouseleave="mouseleave($index)"
             >
-              <span>{{ melt.title }}</span>
+              <span>{{ melt.title }} {{ melt.version }}</span>
             </li>
             <li ng-show="results.length == 0 && query.length > 3 && github">
               <button ng-click="start_add()"
