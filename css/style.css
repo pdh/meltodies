@@ -17,6 +17,8 @@ pre {
   width: 100%;
   margin-top: 0em;
   padding-right: 30px;
+  max-height: 260px;
+  overflow: scroll;
 }
 #search-list { }
 #search-list li {

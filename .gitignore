@@ -1,4 +1,5 @@
 lib
 *.swp
 songs.json
+*.pyc
 
