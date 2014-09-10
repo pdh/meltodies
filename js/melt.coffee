@@ -1,6 +1,8 @@
 'use strict'
 
-window.MeltApp = angular.module 'MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule']
+window.MeltApp = angular.module 'MeltApp', [
+  'ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable'
+]
 
 
 song_template = (scp) ->
@@ -186,7 +188,8 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
         _.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)
       )
       document.getElementById('song-meta').innerHTML = $scope.song_meta
-      document.getElementById('pre-song').innerHTML = $scope.song_data
+      #document.getElementById('pre-song').innerHTML = $scope.song_data
+      $scope.loaded
     _setColumnWidth = (column_width) ->
       els = document.querySelectorAll(".song")
       w = column_width + "em"
@@ -206,6 +209,18 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       if song_text?
         hydrate song_text
     )
+
+  $scope.changed = false
+  $scope.change_song = (a, b, c) ->
+    #el = document.getElementById('pre-song')
+    #console.log el.innerHTML
+    prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim()
+    console.log prev_song_data
+    console.log $scope.song_data
+    if $scope.song_data isnt prev_song_data
+      $scope.changed = true
+    else
+      $scope.changed = false
 
 
   # Github
