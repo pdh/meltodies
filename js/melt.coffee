@@ -112,7 +112,7 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
         $scope.ready_to_select += 1
         # TODO: refine - no magic numbers
         if $scope.ready_to_select > 3
-          document.getElementById('search-list').scrollTop += 20
+          document.getElementById('search-list').scrollTop += 25
       else
         # go to top
         $scope.ready_to_select = 0
@@ -122,7 +122,7 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
         $scope.ready_to_select -= 1
         # TODO: refine - no magic numbers
         if $scope.ready_to_select < $scope.results.length - 5
-          document.getElementById('search-list').scrollTop -= 20
+          document.getElementById('search-list').scrollTop -= 25
       else
         # go to bottom
         $scope.ready_to_select = $scope.results.length - 1
@@ -162,9 +162,8 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
                 "http://www.youtube.com/embed/#{$scope.tube_id}"
               )
 
-            #if $location.path() isnt metal.title
-            $location.path metal.title
-
+            if metal.title.toLowerCase() isnt $location.path().toLowerCase()
+              $location.path metal.title
         catch error
             # errrandle!
             console.log error

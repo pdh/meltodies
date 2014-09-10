@@ -113,7 +113,7 @@
         if (can_down) {
           $scope.ready_to_select += 1;
           if ($scope.ready_to_select > 3) {
-            return document.getElementById('search-list').scrollTop += 20;
+            return document.getElementById('search-list').scrollTop += 25;
           }
         } else {
           $scope.ready_to_select = 0;
@@ -123,7 +123,7 @@
         if (can_up) {
           $scope.ready_to_select -= 1;
           if ($scope.ready_to_select < $scope.results.length - 5) {
-            return document.getElementById('search-list').scrollTop -= 20;
+            return document.getElementById('search-list').scrollTop -= 25;
           }
         } else {
           $scope.ready_to_select = $scope.results.length - 1;
@@ -163,7 +163,9 @@
               ytel = document.getElementById("tube-container");
               ytel.innerHTML = youtube_iframe_template("http://www.youtube.com/embed/" + $scope.tube_id);
             }
-            $location.path(metal.title);
+            if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
+              $location.path(metal.title);
+            }
           } catch (_error) {
             error = _error;
             console.log(error);
