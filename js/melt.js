@@ -209,8 +209,7 @@
           $location.path(metal.title);
         }
         _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)));
-        document.getElementById('song-meta').innerHTML = $scope.song_meta;
-        return $scope.loaded;
+        return document.getElementById('song-meta').innerHTML = $scope.song_meta;
       };
       _setColumnWidth = function(column_width) {
         var el, els, w, _i, _len, _results;
