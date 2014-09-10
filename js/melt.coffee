@@ -132,7 +132,7 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
       if can_up
         $scope.ready_to_select -= 1
         # TODO: refine - no magic numbers
-        if $scope.ready_to_select < $scope.results.length - 5
+        if $scope.ready_to_select < $scope.results.length - 3
           document.getElementById('search-list').scrollTop -= 25
       else
         # go to bottom

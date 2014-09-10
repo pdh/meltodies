@@ -162,7 +162,7 @@
       } else if (key === "Up") {
         if (can_up) {
           $scope.ready_to_select -= 1;
-          if ($scope.ready_to_select < $scope.results.length - 5) {
+          if ($scope.ready_to_select < $scope.results.length - 3) {
             return document.getElementById('search-list').scrollTop -= 25;
           }
         } else {
