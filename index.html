@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="MeltApp" ng-controller="MeltController">
 <head>
   <script src="lib/angular/angular.min.js"></script>
   <script src="lib/angular-ui-utils/ui-utils.min.js"></script>
@@ -10,14 +10,16 @@
   <script src="lib/js-yaml/dist/js-yaml.min.js"></script>
   <script src="lib/oauth-js/dist/oauth.js"></script>
   <script src="lib/octokit/octokit.js"></script>
+  <script src="lib/jsdiff/diff.js"></script>
   <script src="lib/d3/d3.min.js"></script>
   <script src="js/melt.js"></script>
 
   <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <title>{{ selected.title || "Meltodies" }}</title>
 </head>
-<body ng-app="MeltApp">
-  <div ng-controller="MeltController" class="container-fluid">
+<body>
+  <div class="container-fluid">
     <div class="row start" style="margin-top:23%;margin-bottom:0.5em;">
       <div class="col-md-8">
         <input
@@ -71,11 +73,13 @@
              contenteditable="true"
              ng-change="change_song()"
              ng-model="song_data"
+             ui-keydown="{'enter': 'keypress_song($event)'}"
+
         ></pre>
       </div>
     </div>
     <div class="row" ng-show="changed">
-      CHANGED!
+      <pre id="display"></pre>
     </div>
   </div><!-- MeltController -->
 </body>

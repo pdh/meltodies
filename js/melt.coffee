@@ -211,17 +211,53 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     )
 
   $scope.changed = false
-  $scope.change_song = (a, b, c) ->
-    #el = document.getElementById('pre-song')
+  $scope.change_song = () ->
+    # there is no way to diff what we have..
+    $scope.changed = true
+    el = document.getElementById('pre-song')
     #console.log el.innerHTML
     prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim()
-    console.log prev_song_data
-    console.log $scope.song_data
-    if $scope.song_data isnt prev_song_data
-      $scope.changed = true
-    else
-      $scope.changed = false
+    #console.log prev_song_data
+    #console.log $scope.song_data
+    #window.diff = JsDiff.diffChars prev_song_data, $scope.song_data
+    window.diff = JsDiff.diffChars prev_song_data, el.innerHTML
+    display = document.getElementById "display"
+    display.innerHTML = ""
+    diff.forEach (part) ->
+      # green for additions, red for deletions
+      # grey for common parts
+      span = document.createElement('span')
+      color = 'grey'
+      if part.added
+        color = 'green'
+        $scope.changed = true
+        span.style['font-size'] = "200%"
+      if part.removed
+        color = 'red'
+        $scope.changed = true
+      span.style.color = color
+      span.appendChild document.createTextNode part.value
+      display.appendChild span
+  $scope.keypress_song = (ev) ->
+    console.log "KEYPRESS!"
+    # only on enter
+    #$scope.song_data = $scope.song_data.replace("<div>", "\n").replace("<br>", "\n").replace("</div>", "")
+    selection = window.getSelection()
+    range = selection.getRangeAt(0)
+    newline = document.createTextNode('\n')
 
+    range.deleteContents()
+    range.insertNode(newline)
+    range.setStartAfter(newline)
+    range.setEndAfter(newline)
+    range.collapse(false)
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    $scope.change_song()
+    #$scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "")
+    ev.preventDefault()
+    ev.returnValue = false
 
   # Github
   OAuth.initialize 'suDFbLhBbbZAzBRH-CFx5WBoQLU'

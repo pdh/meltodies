@@ -240,16 +240,48 @@
       });
     };
     $scope.changed = false;
-    $scope.change_song = function(a, b, c) {
-      var prev_song_data;
+    $scope.change_song = function() {
+      var display, el, prev_song_data;
+      $scope.changed = true;
+      el = document.getElementById('pre-song');
       prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim();
-      console.log(prev_song_data);
-      console.log($scope.song_data);
-      if ($scope.song_data !== prev_song_data) {
-        return $scope.changed = true;
-      } else {
-        return $scope.changed = false;
-      }
+      window.diff = JsDiff.diffChars(prev_song_data, el.innerHTML);
+      display = document.getElementById("display");
+      display.innerHTML = "";
+      return diff.forEach(function(part) {
+        var color, span;
+        span = document.createElement('span');
+        color = 'grey';
+        if (part.added) {
+          color = 'green';
+          $scope.changed = true;
+          span.style['font-size'] = "200%";
+        }
+        if (part.removed) {
+          color = 'red';
+          $scope.changed = true;
+        }
+        span.style.color = color;
+        span.appendChild(document.createTextNode(part.value));
+        return display.appendChild(span);
+      });
+    };
+    $scope.keypress_song = function(ev) {
+      var newline, range, selection;
+      console.log("KEYPRESS!");
+      selection = window.getSelection();
+      range = selection.getRangeAt(0);
+      newline = document.createTextNode('\n');
+      range.deleteContents();
+      range.insertNode(newline);
+      range.setStartAfter(newline);
+      range.setEndAfter(newline);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      $scope.change_song();
+      ev.preventDefault();
+      return ev.returnValue = false;
     };
     OAuth.initialize('suDFbLhBbbZAzBRH-CFx5WBoQLU');
     $scope.login = function() {
