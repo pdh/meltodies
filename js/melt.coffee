@@ -47,7 +47,7 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
 
   $http(
     method: "GET"
-    url: "/songs.json"
+    url: "songs.json"
   ).success (data) ->
     # scope.data is songs.json
     $scope.data = data
@@ -132,7 +132,7 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
       if can_up
         $scope.ready_to_select -= 1
         # TODO: refine - no magic numbers
-        if $scope.ready_to_select < $scope.results.length - 5
+        if $scope.ready_to_select < $scope.results.length - 3
           document.getElementById('search-list').scrollTop -= 25
       else
         # go to bottom
@@ -185,7 +185,9 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
 
       $scope.song_data = $scope.song_data.trim()
 
-      _setColumnWidth Math.round(_.max($scope.song_data.split("\n")).length * 1.25)
+      _setColumnWidth Math.round(
+        _.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 0)
+      )
       document.getElementById('song-meta').innerHTML = $scope.song_meta
       document.getElementById('pre-song').innerHTML = $scope.song_data
     _setColumnWidth = (column_width) ->

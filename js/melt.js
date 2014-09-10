@@ -162,7 +162,7 @@
       } else if (key === "Up") {
         if (can_up) {
           $scope.ready_to_select -= 1;
-          if ($scope.ready_to_select < $scope.results.length - 5) {
+          if ($scope.ready_to_select < $scope.results.length - 3) {
             return document.getElementById('search-list').scrollTop -= 25;
           }
         } else {
@@ -215,7 +215,7 @@
           $scope.song_data = data;
         }
         $scope.song_data = $scope.song_data.trim();
-        _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * 1.25));
+        _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 0)));
         document.getElementById('song-meta').innerHTML = $scope.song_meta;
         return document.getElementById('pre-song').innerHTML = $scope.song_data;
       });
