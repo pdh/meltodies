@@ -185,7 +185,9 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
 
       $scope.song_data = $scope.song_data.trim()
 
-      _setColumnWidth Math.round(_.max($scope.song_data.split("\n")).length * 1.25)
+      _setColumnWidth Math.round(
+        _.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 0)
+      )
       document.getElementById('song-meta').innerHTML = $scope.song_meta
       document.getElementById('pre-song').innerHTML = $scope.song_data
     _setColumnWidth = (column_width) ->
