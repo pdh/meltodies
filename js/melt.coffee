@@ -197,7 +197,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
 
     $http(
       method: "GET",
-      url: datum.file + "oops"
+      url: datum.file
     ).success((song_text) ->
       hydrate song_text
       localStorageService.set datum.file, song_text

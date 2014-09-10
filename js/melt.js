@@ -227,7 +227,7 @@
       };
       return $http({
         method: "GET",
-        url: datum.file + "oops"
+        url: datum.file
       }).success(function(song_text) {
         hydrate(song_text);
         return localStorageService.set(datum.file, song_text);
