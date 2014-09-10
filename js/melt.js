@@ -10,7 +10,7 @@
   };
 
   youtube_iframe_template = function(src) {
-    return "<iframe id=\"ytplayer\" type=\"text/html\" width=\"240\" height=\"135\"\n    allowfullscreen=\"true\"\n    src=\"" + src + "\"\n    frameborder=\"0\"></iframe>";
+    return "<iframe id=\"ytplayer\" type=\"text/html\" width=\"231\" height=\"130\"\n    allowfullscreen=\"true\"\n    src=\"" + src + "\"\n    frameborder=\"0\"></iframe>";
   };
 
   started = false;
@@ -26,6 +26,7 @@
   };
 
   MeltController = function($scope, $http, $modal, $location, localStorageService) {
+    window.lss = localStorageService;
     window.l = $location;
     if ($location.path()) {
       transition_search_input(0);
@@ -40,6 +41,15 @@
       url: "songs.json"
     }).success(function(songs_json) {
       $scope.songs_json = songs_json;
+      localStorageService.bind($scope, 'songs_json', songs_json);
+      return $scope.onLoad();
+    }).error(function() {
+      var songs_json;
+      songs_json = localStorageService.get('songs_json');
+      if (songs_json != null) {
+        $scope.songs_json = songs_json;
+        localStorageService.bind($scope, 'songs_json', songs_json);
+      }
       return $scope.onLoad();
     });
     $scope.onLoad = function() {
@@ -49,19 +59,16 @@
       return $scope.select_title(title);
     };
     $scope.select_title = function(title) {
-      var d, _i, _len, _ref, _results;
+      var d, _i, _len, _ref;
       if (title !== void 0 && $scope.songs_json !== void 0) {
         _ref = $scope.songs_json;
-        _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           d = _ref[_i];
           if (d.title.toLowerCase() === title.toLowerCase()) {
-            _results.push($scope.select(d));
-          } else {
-            _results.push(void 0);
+            $scope.select(d);
+            return;
           }
         }
-        return _results;
       }
     };
     $scope.$on('$locationChangeSuccess', function(scope, next, current) {
@@ -184,42 +191,28 @@
       return $scope.ready_to_select = -1;
     };
     $scope.select = function(datum) {
-      var _setColumnWidth;
+      var hydrate, _setColumnWidth;
       $scope.query = "";
       $scope.results = [];
       $scope.selected = datum;
-      $http({
-        method: "GET",
-        url: datum.file
-      }).success(function(data) {
-        var error, metal, ytel;
-        if (data.indexOf('===') > -1) {
-          $scope.song_meta = '---\n' + data.split('===')[1];
-          $scope.song_data = data.split('===')[2];
-          try {
-            metal = jsyaml.load($scope.song_meta);
-            $scope.tube_id = metal.tube_id;
-            if ($scope.tube_id) {
-              ytel = document.getElementById("tube-container");
-              ytel.innerHTML = youtube_iframe_template("http://www.youtube.com/embed/" + $scope.tube_id);
-            }
-            if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
-              $location.path(metal.title);
-            }
-          } catch (_error) {
-            error = _error;
-            console.log(error);
-          }
-        } else {
-          $scope.song_meta = null;
-          $scope.song_data = data;
+      hydrate = function(song_text) {
+        var metal, ytel;
+        $scope.song_meta = song_text.split('===')[1].trim();
+        $scope.song_data = song_text.split('===')[2].trim();
+        metal = jsyaml.load($scope.song_meta);
+        $scope.tube_id = metal.tube_id;
+        if ($scope.tube_id) {
+          ytel = document.getElementById("tube-container");
+          ytel.innerHTML = youtube_iframe_template("http://www.youtube.com/embed/" + $scope.tube_id);
         }
-        $scope.song_data = $scope.song_data.trim();
-        _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 0)));
+        if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
+          $location.path(metal.title);
+        }
+        _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)));
         document.getElementById('song-meta').innerHTML = $scope.song_meta;
         return document.getElementById('pre-song').innerHTML = $scope.song_data;
-      });
-      return _setColumnWidth = function(column_width) {
+      };
+      _setColumnWidth = function(column_width) {
         var el, els, w, _i, _len, _results;
         els = document.querySelectorAll(".song");
         w = column_width + "em";
@@ -232,6 +225,19 @@
         }
         return _results;
       };
+      return $http({
+        method: "GET",
+        url: datum.file + "oops"
+      }).success(function(song_text) {
+        hydrate(song_text);
+        return localStorageService.set(datum.file, song_text);
+      }).error(function() {
+        var song_text;
+        song_text = localStorageService.get(datum.file);
+        if (song_text != null) {
+          return hydrate(song_text);
+        }
+      });
     };
     OAuth.initialize('suDFbLhBbbZAzBRH-CFx5WBoQLU');
     $scope.login = function() {

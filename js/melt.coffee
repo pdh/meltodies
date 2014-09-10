@@ -18,7 +18,7 @@ tube_id: #{scp.tube_id}
 # we just destroy and replace
 youtube_iframe_template = (src) ->
   """
-<iframe id="ytplayer" type="text/html" width="240" height="135"
+<iframe id="ytplayer" type="text/html" width="231" height="130"
     allowfullscreen="true"
     src="#{src}"
     frameborder="0"></iframe>
@@ -36,6 +36,7 @@ transition_search_input = (duration=100) ->
 
 
 MeltController = ($scope, $http, $modal, $location, localStorageService) ->
+  window.lss = localStorageService
   window.l = $location
   if $location.path()
     transition_search_input 0
@@ -48,9 +49,19 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
   $http(
     method: "GET"
     url: "songs.json"
-  ).success (songs_json) ->
+  ).success((songs_json) ->
     $scope.songs_json = songs_json
+    localStorageService.bind $scope, 'songs_json', songs_json
     $scope.onLoad()
+  ).error(() ->
+    # maybe we are offline or sth.
+    # try to fallback to localStorage
+    songs_json = localStorageService.get 'songs_json'
+    if songs_json?
+      $scope.songs_json = songs_json
+      localStorageService.bind $scope, 'songs_json', songs_json
+    $scope.onLoad()
+  )
 
   $scope.onLoad = () ->
     # called when songs.json == data comes back
@@ -64,6 +75,9 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       for d in $scope.songs_json
         if d.title.toLowerCase() == title.toLowerCase()
           $scope.select d
+          # just select the first match
+          # TODO - versions?
+          return
 
   $scope.$on '$locationChangeSuccess', (scope, next, current) ->
     $scope.select_title $location.path().split('/')[1]
@@ -152,40 +166,24 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     $scope.query = ""
     $scope.results = []
     $scope.selected = datum
-    $http(
-      method: "GET",
-      url: datum.file
-    ).success (data) ->
-      # still set it to know if we are going to show it :D
-      if data.indexOf('===') > -1
-        $scope.song_meta = '---\n' + data.split('===')[1]
-        $scope.song_data = data.split('===')[2]
-        try
-            metal = jsyaml.load($scope.song_meta)
-            $scope.tube_id = metal.tube_id
 
-            if $scope.tube_id
-              # we have to replace the iframe so it doesn't mess up
-              # our back button hotness.
-              ytel = document.getElementById("tube-container")
-              ytel.innerHTML = youtube_iframe_template(
-                "http://www.youtube.com/embed/#{$scope.tube_id}"
-              )
-
-            if metal.title.toLowerCase() isnt $location.path().toLowerCase()
-              $location.path metal.title
-        catch error
-            # errrandle!
-            console.log error
-      # we should just require meta and the correct format?
-      else
-        $scope.song_meta = null
-        $scope.song_data = data
-
-      $scope.song_data = $scope.song_data.trim()
-
+    hydrate = (song_text) ->
+      # we assume that the song is in the correct format
+      $scope.song_meta = song_text.split('===')[1].trim()
+      $scope.song_data = song_text.split('===')[2].trim()
+      metal = jsyaml.load($scope.song_meta)
+      $scope.tube_id = metal.tube_id
+      if $scope.tube_id
+        # we have to replace the iframe so it doesn't mess up
+        # our back button hotness.
+        ytel = document.getElementById("tube-container")
+        ytel.innerHTML = youtube_iframe_template(
+          "http://www.youtube.com/embed/#{$scope.tube_id}"
+        )
+      if metal.title.toLowerCase() isnt $location.path().toLowerCase()
+        $location.path metal.title
       _setColumnWidth Math.round(
-        _.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 0)
+        _.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)
       )
       document.getElementById('song-meta').innerHTML = $scope.song_meta
       document.getElementById('pre-song').innerHTML = $scope.song_data
@@ -196,6 +194,19 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
         el.style["-webkit-column-width"] = w
         el.style["-moz-column-width"] = w
         el.style["column-width"] = w
+
+    $http(
+      method: "GET",
+      url: datum.file + "oops"
+    ).success((song_text) ->
+      hydrate song_text
+      localStorageService.set datum.file, song_text
+    ).error(()->
+      song_text = localStorageService.get datum.file
+      if song_text?
+        hydrate song_text
+    )
+
 
   # Github
   OAuth.initialize 'suDFbLhBbbZAzBRH-CFx5WBoQLU'
