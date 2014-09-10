@@ -162,9 +162,8 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
                 "http://www.youtube.com/embed/#{$scope.tube_id}"
               )
 
-            #if $location.path() isnt metal.title
-            $location.path metal.title
-
+            if metal.title.toLowerCase() isnt $location.path().toLowerCase()
+              $location.path metal.title
         catch error
             # errrandle!
             console.log error

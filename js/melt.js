@@ -163,7 +163,9 @@
               ytel = document.getElementById("tube-container");
               ytel.innerHTML = youtube_iframe_template("http://www.youtube.com/embed/" + $scope.tube_id);
             }
-            $location.path(metal.title);
+            if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
+              $location.path(metal.title);
+            }
           } catch (_error) {
             error = _error;
             console.log(error);
