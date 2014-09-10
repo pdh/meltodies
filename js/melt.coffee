@@ -18,7 +18,7 @@ tube_id: #{scp.tube_id}
 # we just destroy and replace
 youtube_iframe_template = (src) ->
   """
-<iframe id="ytplayer" type="text/html" width="213" height="120"
+<iframe id="ytplayer" type="text/html" width="240" height="135"
     allowfullscreen="true"
     src="#{src}"
     frameborder="0"></iframe>
@@ -77,10 +77,21 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
     $scope.ready_to_select = -1
 
     words = $scope.query.split(' ')
+    #console.log "start", words
+    authstr = "author:"
+    filtered_words = (w for w in words when (not (w.substring(0, authstr.length) is authstr)))
+    authorstrs = (w for w in words when (w.substring(0, authstr.length) is authstr))
+    a_search = (a.split(":")[1] for a in authorstrs)
+    #console.log "filtered", filtered_words
+    #console.log "authors", a_search
     window.filterf = (datum) ->
-      for word in words
+      for word in filtered_words
         if datum.title.toLowerCase().indexOf(word.toLowerCase()) < 0
           return false
+      if datum.author?
+        for author_word in a_search
+          if datum.author.toLowerCase().indexOf(author_word.toLowerCase()) < 0
+            return false
       true
     res = _.filter($scope.data, filterf)
     $scope.results = res
