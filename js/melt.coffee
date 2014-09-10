@@ -216,22 +216,22 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "")
 
     prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim()
-    window.diff = JsDiff.diffWords prev_song_data, el.innerHTML
+    window.diff = JsDiff.diffChars prev_song_data, el.innerHTML
     display = document.getElementById "display"
     display.innerHTML = ""
     diff.forEach (part) ->
       # green for additions, red for deletions
       # grey for common parts
       span = document.createElement('span')
-      color = 'grey'
+      color = 'inherit'
       if part.added
-        color = 'green'
+        color = '#dfd'  # github diff green
         $scope.changed = true
         span.style['font-weight'] = "bold"
       if part.removed
-        color = 'red'
+        color = '#fdd'
         $scope.changed = true
-      span.style.color = color
+      span.style["background-color"] = color
       span.appendChild document.createTextNode part.value
       display.appendChild span
 

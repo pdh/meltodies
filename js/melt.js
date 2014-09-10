@@ -245,23 +245,23 @@
       el = document.getElementById('pre-song');
       $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "");
       prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim();
-      window.diff = JsDiff.diffWords(prev_song_data, el.innerHTML);
+      window.diff = JsDiff.diffChars(prev_song_data, el.innerHTML);
       display = document.getElementById("display");
       display.innerHTML = "";
       return diff.forEach(function(part) {
         var color, span;
         span = document.createElement('span');
-        color = 'grey';
+        color = 'inherit';
         if (part.added) {
-          color = 'green';
+          color = '#dfd';
           $scope.changed = true;
           span.style['font-weight'] = "bold";
         }
         if (part.removed) {
-          color = 'red';
+          color = '#fdd';
           $scope.changed = true;
         }
-        span.style.color = color;
+        span.style["background-color"] = color;
         span.appendChild(document.createTextNode(part.value));
         return display.appendChild(span);
       });
