@@ -10,7 +10,7 @@
   };
 
   youtube_iframe_template = function(src) {
-    return "<iframe id=\"ytplayer\" type=\"text/html\" width=\"213\" height=\"120\"\n    allowfullscreen=\"true\"\n    src=\"" + src + "\"\n    frameborder=\"0\"></iframe>";
+    return "<iframe id=\"ytplayer\" type=\"text/html\" width=\"240\" height=\"135\"\n    allowfullscreen=\"true\"\n    src=\"" + src + "\"\n    frameborder=\"0\"></iframe>";
   };
 
   started = false;
@@ -68,19 +68,59 @@
       return $scope.select_title($location.path().split('/')[1]);
     });
     $scope.update_results = function() {
-      var res, words;
+      var a, a_search, authorstrs, authstr, filtered_words, res, w, words;
       if (!started) {
         transition_search_input();
       }
       document.getElementById('search-list').scrollTop = 0;
       $scope.ready_to_select = -1;
       words = $scope.query.split(' ');
-      window.filterf = function(datum) {
-        var word, _i, _len;
+      authstr = "author:";
+      filtered_words = (function() {
+        var _i, _len, _results;
+        _results = [];
         for (_i = 0, _len = words.length; _i < _len; _i++) {
-          word = words[_i];
+          w = words[_i];
+          if (!(w.substring(0, authstr.length) === authstr)) {
+            _results.push(w);
+          }
+        }
+        return _results;
+      })();
+      authorstrs = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = words.length; _i < _len; _i++) {
+          w = words[_i];
+          if (w.substring(0, authstr.length) === authstr) {
+            _results.push(w);
+          }
+        }
+        return _results;
+      })();
+      a_search = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = authorstrs.length; _i < _len; _i++) {
+          a = authorstrs[_i];
+          _results.push(a.split(":")[1]);
+        }
+        return _results;
+      })();
+      window.filterf = function(datum) {
+        var author_word, word, _i, _j, _len, _len1;
+        for (_i = 0, _len = filtered_words.length; _i < _len; _i++) {
+          word = filtered_words[_i];
           if (datum.title.toLowerCase().indexOf(word.toLowerCase()) < 0) {
             return false;
+          }
+        }
+        if (datum.author != null) {
+          for (_j = 0, _len1 = a_search.length; _j < _len1; _j++) {
+            author_word = a_search[_j];
+            if (datum.author.toLowerCase().indexOf(author_word.toLowerCase()) < 0) {
+              return false;
+            }
           }
         }
         return true;
