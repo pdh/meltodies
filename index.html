@@ -4,6 +4,7 @@
   <script src="lib/angular/angular.min.js"></script>
   <script src="lib/angular-ui-utils/ui-utils.min.js"></script>
   <script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="lib/angular-local-storage/angular-local-storage.min.js"></script>
   <script src="lib/underscore/underscore-min.js"></script>
   <script src="lib/js-yaml/dist/js-yaml.min.js"></script>
   <script src="lib/oauth-js/dist/oauth.js"></script>
@@ -64,7 +65,7 @@
     </div>
     <div class="row">
       <div class="song" ng-show="song_data">
-      <!-- if contenteditable, angular gets it messed up, so we set directly -->
+        <!-- if contenteditable, angular gets it messed up, so we set directly -->
         <pre id="pre-song" contenteditable="true"></pre>
       </div>
     </div>

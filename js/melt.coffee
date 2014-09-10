@@ -1,6 +1,6 @@
 'use strict'
 
-window.MeltApp = angular.module 'MeltApp', ['ui.utils', 'ui.bootstrap']
+window.MeltApp = angular.module 'MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule']
 
 
 song_template = (scp) ->
@@ -35,7 +35,7 @@ transition_search_input = (duration=100) ->
   started = true
 
 
-MeltController = ($scope, $http, $sce, $modal, $location) ->
+MeltController = ($scope, $http, $modal, $location, localStorageService) ->
   window.l = $location
   if $location.path()
     transition_search_input 0
@@ -48,9 +48,8 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
   $http(
     method: "GET"
     url: "songs.json"
-  ).success (data) ->
-    # scope.data is songs.json
-    $scope.data = data
+  ).success (songs_json) ->
+    $scope.songs_json = songs_json
     $scope.onLoad()
 
   $scope.onLoad = () ->
@@ -61,8 +60,8 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
     $scope.select_title title
 
   $scope.select_title = (title) ->
-    if title isnt undefined and $scope.data isnt undefined
-      for d in $scope.data
+    if title isnt undefined and $scope.songs_json isnt undefined
+      for d in $scope.songs_json
         if d.title.toLowerCase() == title.toLowerCase()
           $scope.select d
 
@@ -93,7 +92,7 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
           if datum.author.toLowerCase().indexOf(author_word.toLowerCase()) < 0
             return false
       true
-    res = _.filter($scope.data, filterf)
+    res = _.filter($scope.songs_json, filterf)
     $scope.results = res
     return
 
@@ -291,5 +290,5 @@ AddSongModalCtrl = ($scope, $modalInstance, title) ->
     $modalInstance.dismiss('cancel')
 
 
-MeltController.$inject = ['$scope', '$http', '$sce', '$modal', '$location']
+MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService']
 angular.module('MeltApp').controller 'MeltController', MeltController

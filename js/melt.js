@@ -3,7 +3,7 @@
   'use strict';
   var AddSongModalCtrl, MeltController, song_template, started, transition_search_input, youtube_iframe_template;
 
-  window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap']);
+  window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule']);
 
   song_template = function(scp) {
     return "===\ntitle: " + scp.title + "\nauthor: " + scp.author + "\ntube_id: " + scp.tube_id + "\n===\n" + scp.song_data;
@@ -25,7 +25,7 @@
     return started = true;
   };
 
-  MeltController = function($scope, $http, $sce, $modal, $location) {
+  MeltController = function($scope, $http, $modal, $location, localStorageService) {
     window.l = $location;
     if ($location.path()) {
       transition_search_input(0);
@@ -38,8 +38,8 @@
     $http({
       method: "GET",
       url: "songs.json"
-    }).success(function(data) {
-      $scope.data = data;
+    }).success(function(songs_json) {
+      $scope.songs_json = songs_json;
       return $scope.onLoad();
     });
     $scope.onLoad = function() {
@@ -50,8 +50,8 @@
     };
     $scope.select_title = function(title) {
       var d, _i, _len, _ref, _results;
-      if (title !== void 0 && $scope.data !== void 0) {
-        _ref = $scope.data;
+      if (title !== void 0 && $scope.songs_json !== void 0) {
+        _ref = $scope.songs_json;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           d = _ref[_i];
@@ -125,7 +125,7 @@
         }
         return true;
       };
-      res = _.filter($scope.data, filterf);
+      res = _.filter($scope.songs_json, filterf);
       $scope.results = res;
     };
     $scope.query_key = function($event) {
@@ -318,7 +318,7 @@
     };
   };
 
-  MeltController.$inject = ['$scope', '$http', '$sce', '$modal', '$location'];
+  MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService'];
 
   angular.module('MeltApp').controller('MeltController', MeltController);
 
