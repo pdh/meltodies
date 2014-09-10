@@ -47,9 +47,10 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
     document.getElementById("search").focus()
     # angular way to get path without / ?
     title = $location.path().split('/')[1]
-    for d in $scope.data
-      if d.title.toLowerCase() == title.toLowerCase()
-        $scope.select d
+    if title?
+      for d in $scope.data
+        if d.title.toLowerCase() == title.toLowerCase()
+          $scope.select d
     #$scope.$apply()
 
   $scope.update_results = ->
@@ -140,7 +141,8 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
               $scope.tube_url = $sce.trustAsResourceUrl(
                 "http://www.youtube.com/embed/#{$scope.tube_id}"
               )
-            $location.path metal.title
+            if metal.title.toLowerCase() isnt $location.path().toLowerCase()
+              $location.path metal.title
         catch error
             # errrandle!
             console.log error

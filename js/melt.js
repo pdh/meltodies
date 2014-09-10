@@ -42,17 +42,19 @@
       var d, title, _i, _len, _ref, _results;
       document.getElementById("search").focus();
       title = $location.path().split('/')[1];
-      _ref = $scope.data;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        d = _ref[_i];
-        if (d.title.toLowerCase() === title.toLowerCase()) {
-          _results.push($scope.select(d));
-        } else {
-          _results.push(void 0);
+      if (title != null) {
+        _ref = $scope.data;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          d = _ref[_i];
+          if (d.title.toLowerCase() === title.toLowerCase()) {
+            _results.push($scope.select(d));
+          } else {
+            _results.push(void 0);
+          }
         }
+        return _results;
       }
-      return _results;
     };
     $scope.update_results = function() {
       var res, words;
@@ -149,7 +151,9 @@
             if ($scope.tube_id) {
               $scope.tube_url = $sce.trustAsResourceUrl("http://www.youtube.com/embed/" + $scope.tube_id);
             }
-            $location.path(metal.title);
+            if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
+              $location.path(metal.title);
+            }
           } catch (_error) {
             error = _error;
             console.log(error);
