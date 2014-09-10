@@ -47,7 +47,7 @@ MeltController = ($scope, $http, $sce, $modal, $location) ->
 
   $http(
     method: "GET"
-    url: "/songs.json"
+    url: "songs.json"
   ).success (data) ->
     # scope.data is songs.json
     $scope.data = data
