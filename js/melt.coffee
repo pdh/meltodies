@@ -212,15 +212,13 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
 
   $scope.changed = false
   $scope.change_song = () ->
-    # there is no way to diff what we have..
-    $scope.changed = true
+    $scope.changed = false
     el = document.getElementById('pre-song')
-    #console.log el.innerHTML
+    # subtle update bugs .. make sure that we don't have any stray <br>
+    $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "")
+
     prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim()
-    #console.log prev_song_data
-    #console.log $scope.song_data
-    #window.diff = JsDiff.diffChars prev_song_data, $scope.song_data
-    window.diff = JsDiff.diffChars prev_song_data, el.innerHTML
+    window.diff = JsDiff.diffWords prev_song_data, el.innerHTML
     display = document.getElementById "display"
     display.innerHTML = ""
     diff.forEach (part) ->
@@ -231,21 +229,20 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       if part.added
         color = 'green'
         $scope.changed = true
-        span.style['font-size'] = "200%"
+        span.style['font-weight'] = "bold"
       if part.removed
         color = 'red'
         $scope.changed = true
       span.style.color = color
       span.appendChild document.createTextNode part.value
       display.appendChild span
+
   $scope.keypress_song = (ev) ->
-    console.log "KEYPRESS!"
     # only on enter
-    #$scope.song_data = $scope.song_data.replace("<div>", "\n").replace("<br>", "\n").replace("</div>", "")
+    # http://stackoverflow.com/q/23974533/177293
     selection = window.getSelection()
     range = selection.getRangeAt(0)
     newline = document.createTextNode('\n')
-
     range.deleteContents()
     range.insertNode(newline)
     range.setStartAfter(newline)
@@ -253,9 +250,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     range.collapse(false)
     selection.removeAllRanges()
     selection.addRange(range)
-
     $scope.change_song()
-    #$scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "")
     ev.preventDefault()
     ev.returnValue = false
 

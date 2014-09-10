@@ -242,10 +242,11 @@
     $scope.changed = false;
     $scope.change_song = function() {
       var display, el, prev_song_data;
-      $scope.changed = true;
+      $scope.changed = false;
       el = document.getElementById('pre-song');
+      $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "");
       prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim();
-      window.diff = JsDiff.diffChars(prev_song_data, el.innerHTML);
+      window.diff = JsDiff.diffWords(prev_song_data, el.innerHTML);
       display = document.getElementById("display");
       display.innerHTML = "";
       return diff.forEach(function(part) {
@@ -255,7 +256,7 @@
         if (part.added) {
           color = 'green';
           $scope.changed = true;
-          span.style['font-size'] = "200%";
+          span.style['font-weight'] = "bold";
         }
         if (part.removed) {
           color = 'red';
@@ -268,7 +269,6 @@
     };
     $scope.keypress_song = function(ev) {
       var newline, range, selection;
-      console.log("KEYPRESS!");
       selection = window.getSelection();
       range = selection.getRangeAt(0);
       newline = document.createTextNode('\n');
