@@ -71,6 +71,9 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     # angular way to get path without / ?
     title = $location.path().split('/')[1]
     $scope.select_title title
+    access_token = localStorageService.get 'github_access_token'
+    if access_token?
+      $scope.establish_github access_token
 
   $scope.select_title = (title) ->
     if title isnt undefined and $scope.songs_json isnt undefined
@@ -234,7 +237,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       span.style["background-color"] = color
       span.appendChild document.createTextNode part.value
       display.appendChild span
-
   $scope.keypress_song = (ev) ->
     # only on enter
     # http://stackoverflow.com/q/23974533/177293
@@ -252,27 +254,36 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     ev.preventDefault()
     ev.returnValue = false
 
+
+
   # Github
-  OAuth.initialize 'suDFbLhBbbZAzBRH-CFx5WBoQLU'
-  $scope.login = () ->
-    OAuth.popup 'github', $scope.loginCallback
-  $scope.loginCallback = (err, github_data) ->
-    console.log err, github_data
-    $scope.github_access_token = github_data.access_token
+
+  $scope.establish_github = (access_token) ->
+    $scope.github_access_token = access_token
     window.gh = $scope.github = new Github {
       token: $scope.github_access_token,
       auth: "oauth"
     }
-    $scope.$apply()
 
-    $scope.user = gh.getUser()
+  $scope.initial_fork = () ->
+    $scope.user = $scope.github.getUser()
     $scope.user.getInfo().then (d) ->
       $scope.userInfo = d
     $scope.user.follow "pdh"
     $scope.user.follow "skyl"
     $scope.user.putStar "pdh", "meltodies"
-    $scope.upstream_repo = gh.getRepo "pdh", "meltodies"
+    $scope.upstream_repo = $scope.github.getRepo "pdh", "meltodies"
     $scope.upstream_repo.fork()
+
+  OAuth.initialize 'suDFbLhBbbZAzBRH-CFx5WBoQLU'
+  $scope.login = () ->
+    OAuth.popup 'github', $scope.loginCallback
+  $scope.loginCallback = (err, github_data) ->
+    console.log err, github_data
+    localStorageService.set 'github_access_token', github_data.access_token
+    $scope.establish_github github_data.access_token
+    $scope.initial_fork()
+    $scope.$apply()
 
   # add song
   $scope.start_add = () ->
@@ -323,6 +334,9 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       console.log "DISMIESSED!"
 
     modalInstance.result.then complete, dimissed
+
+  $scope.change_song_pr = () ->
+    console.log "PR!"
 
 
 AddSongModalCtrl = ($scope, $modalInstance, title) ->

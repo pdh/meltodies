@@ -53,10 +53,14 @@
       return $scope.onLoad();
     });
     $scope.onLoad = function() {
-      var title;
+      var access_token, title;
       document.getElementById("search").focus();
       title = $location.path().split('/')[1];
-      return $scope.select_title(title);
+      $scope.select_title(title);
+      access_token = localStorageService.get('github_access_token');
+      if (access_token != null) {
+        return $scope.establish_github(access_token);
+      }
     };
     $scope.select_title = function(title) {
       var d, _i, _len, _ref;
@@ -282,29 +286,36 @@
       ev.preventDefault();
       return ev.returnValue = false;
     };
-    OAuth.initialize('suDFbLhBbbZAzBRH-CFx5WBoQLU');
-    $scope.login = function() {
-      return OAuth.popup('github', $scope.loginCallback);
-    };
-    $scope.loginCallback = function(err, github_data) {
-      console.log(err, github_data);
-      $scope.github_access_token = github_data.access_token;
-      window.gh = $scope.github = new Github({
+    $scope.establish_github = function(access_token) {
+      $scope.github_access_token = access_token;
+      return window.gh = $scope.github = new Github({
         token: $scope.github_access_token,
         auth: "oauth"
       });
-      $scope.$apply();
-      $scope.user = gh.getUser();
+    };
+    $scope.initial_fork = function() {
+      $scope.user = $scope.github.getUser();
       $scope.user.getInfo().then(function(d) {
         return $scope.userInfo = d;
       });
       $scope.user.follow("pdh");
       $scope.user.follow("skyl");
       $scope.user.putStar("pdh", "meltodies");
-      $scope.upstream_repo = gh.getRepo("pdh", "meltodies");
+      $scope.upstream_repo = $scope.github.getRepo("pdh", "meltodies");
       return $scope.upstream_repo.fork();
     };
-    return $scope.start_add = function() {
+    OAuth.initialize('suDFbLhBbbZAzBRH-CFx5WBoQLU');
+    $scope.login = function() {
+      return OAuth.popup('github', $scope.loginCallback);
+    };
+    $scope.loginCallback = function(err, github_data) {
+      console.log(err, github_data);
+      localStorageService.set('github_access_token', github_data.access_token);
+      $scope.establish_github(github_data.access_token);
+      $scope.initial_fork();
+      return $scope.$apply();
+    };
+    $scope.start_add = function() {
       var complete, dimissed, modalInstance, query;
       query = $scope.query;
       modalInstance = $modal.open({
@@ -348,6 +359,9 @@
         return console.log("DISMIESSED!");
       };
       return modalInstance.result.then(complete, dimissed);
+    };
+    return $scope.change_song_pr = function() {
+      return console.log("PR!");
     };
   };
 
