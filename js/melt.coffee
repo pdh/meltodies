@@ -195,7 +195,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     if metal.title.toLowerCase() isnt $location.path().toLowerCase()
       $location.path metal.title
     _setColumnWidth Math.round(
-      _.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)
+      _.max($scope.song_data.split("\n")).length * 1.25 * (window.devicePixelRatio || 1)
     )
     document.getElementById('song-meta').innerHTML = $scope.song_meta
     $scope.song_edited = false
@@ -386,7 +386,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
 
         hydrate file_text
         localStorageService.set "override::#{path}", "please"
-        console.log "WE WROTE!", path
+        #console.log "WE WROTE!", path
         localStorageService.set path, file_text
         $scope.song_edited = false
         $scope.$apply()
