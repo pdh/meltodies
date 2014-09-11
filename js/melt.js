@@ -401,7 +401,6 @@
           });
           hydrate(file_text);
           localStorageService.set("override::" + path, "please");
-          console.log("WE WROTE!", path);
           localStorageService.set(path, file_text);
           $scope.song_edited = false;
           return $scope.$apply();

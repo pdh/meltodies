@@ -386,7 +386,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
 
         hydrate file_text
         localStorageService.set "override::#{path}", "please"
-        console.log "WE WROTE!", path
+        #console.log "WE WROTE!", path
         localStorageService.set path, file_text
         $scope.song_edited = false
         $scope.$apply()
