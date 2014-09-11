@@ -290,6 +290,8 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     $scope.user.putStar "pdh", "meltodies"
     $scope.upstream_repo = $scope.github.getRepo "pdh", "meltodies"
     $scope.upstream_repo.fork()
+    # TODO - need to make sure that our master
+    # is merged with upstream so that we can minimize conflicts
 
   OAuth.initialize 'suDFbLhBbbZAzBRH-CFx5WBoQLU'
   $scope.login = () ->
