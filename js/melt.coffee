@@ -5,11 +5,21 @@ window.MeltApp = angular.module 'MeltApp', [
 ]
 
 
+_setColumnWidth = (column_width) ->
+  els = document.querySelectorAll(".song")
+  w = column_width + "em"
+  for el in els
+    el.style["-webkit-column-width"] = w
+    el.style["-moz-column-width"] = w
+    el.style["column-width"] = w
+
+
 song_template = (scp) ->
   """
 ===
 title: #{scp.title}
 author: #{scp.author}
+performed_by: #{scp.performed_by}
 tube_id: #{scp.tube_id}
 ===
 #{scp.song_data}
@@ -167,43 +177,49 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     $scope.ready_to_select = idx
   $scope.mouseleave = (idx) ->
     $scope.ready_to_select = -1
+
+  hydrate = (song_text) ->
+    # we assume that the song is in the correct format
+    $scope.song_meta = song_text.split('===')[1].trim()
+    $scope.song_data = song_text.split('===')[2].trim()
+    metal = jsyaml.load($scope.song_meta)
+    $scope.tube_id = metal.tube_id
+    if $scope.tube_id
+      # we have to replace the iframe so it doesn't mess up
+      # our back button hotness.
+      ytel = document.getElementById("tube-container")
+      ytel.innerHTML = youtube_iframe_template(
+        "http://www.youtube.com/embed/#{$scope.tube_id}"
+      )
+    if metal.title.toLowerCase() isnt $location.path().toLowerCase()
+      $location.path metal.title
+    _setColumnWidth Math.round(
+      _.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)
+    )
+    document.getElementById('song-meta').innerHTML = $scope.song_meta
+    $scope.song_edited = false
+
   $scope.select = (datum) ->
     $scope.query = ""
     $scope.results = []
     $scope.selected = datum
 
-    hydrate = (song_text) ->
-      # we assume that the song is in the correct format
-      $scope.song_meta = song_text.split('===')[1].trim()
-      $scope.song_data = song_text.split('===')[2].trim()
-      metal = jsyaml.load($scope.song_meta)
-      $scope.tube_id = metal.tube_id
-      if $scope.tube_id
-        # we have to replace the iframe so it doesn't mess up
-        # our back button hotness.
-        ytel = document.getElementById("tube-container")
-        ytel.innerHTML = youtube_iframe_template(
-          "http://www.youtube.com/embed/#{$scope.tube_id}"
-        )
-      if metal.title.toLowerCase() isnt $location.path().toLowerCase()
-        $location.path metal.title
-      _setColumnWidth Math.round(
-        _.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)
-      )
-      document.getElementById('song-meta').innerHTML = $scope.song_meta
-      $scope.song_edited = false
-    _setColumnWidth = (column_width) ->
-      els = document.querySelectorAll(".song")
-      w = column_width + "em"
-      for el in els
-        el.style["-webkit-column-width"] = w
-        el.style["-moz-column-width"] = w
-        el.style["column-width"] = w
+    override_key = "override::#{datum.file}"
+    local_override = localStorageService.get override_key
+    if local_override?
+      override_text = localStorageService.get datum.file
+      hydrate override_text
 
     $http(
       method: "GET",
       url: datum.file
     ).success((song_text) ->
+      # keep the override, but remove the override
+      # if the changes have been merged.
+      if local_override?
+        if song_text is override_text
+          localStorageService.remove override_key
+        return
       hydrate song_text
       localStorageService.set datum.file, song_text
     ).error(()->
@@ -266,8 +282,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       token: $scope.github_access_token,
       auth: "oauth"
     }
-
-  $scope.initial_fork = () ->
     $scope.user = $scope.github.getUser()
     $scope.user.getInfo().then (d) ->
       $scope.userInfo = d
@@ -284,7 +298,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     console.log err, github_data
     localStorageService.set 'github_access_token', github_data.access_token
     $scope.establish_github github_data.access_token
-    $scope.initial_fork()
     $scope.$apply()
 
   # add song
@@ -310,7 +323,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       changes = {}
       changes[path] = file
       # just one file? ok.
-      _onBranch = (a, b, c) ->
+      _onBranch = () ->
         branch = user_repo.getBranch(branchname)
         branch.writeMany(changes, "add #{data.title}").then(
           (() ->
@@ -338,7 +351,44 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     modalInstance.result.then complete, dimissed
 
   $scope.edit_song_pr = () ->
-    console.log "PR!"
+    # TODO - should probably confirm modal ...
+    # TODO - edit metadata
+    # TODO - DRY some of this up?
+    branchname = $scope.selected.title.toLowerCase().replace /\ /g, '_'
+    filename = "#{branchname}.melt"
+    context = {
+      title: $scope.selected.title
+      author: $scope.selected.author
+      version: $scope.selected.version
+      performed_by: $scope.selected.performed_by
+      tube_id: $scope.selected.tube_id
+      song_data: $scope.song_data
+    }
+    file_text = song_template context
+    changes = {}
+    path = "melts/#{filename}"
+    changes[path] = file_text
+
+    user_repo = $scope.github.getRepo $scope.userInfo.login, "meltodies"
+    master = user_repo.getBranch('master')
+
+    _onBranch = () ->
+      branch = user_repo.getBranch(branchname)
+      # TODO - error handling
+      branch.writeMany(changes, "Edit #{context.title}").then () ->
+        $scope.upstream_repo.createPullRequest
+          "title": "Edit #{context.title}"
+          "head": "#{$scope.userInfo.login}:#{branchname}"
+          "base": "master"
+
+        hydrate file_text
+        localStorageService.set "override::#{path}", "please"
+        console.log "WE WROTE!", path
+        localStorageService.set path, file_text
+        $scope.song_edited = false
+        $scope.$apply()
+
+    master.createBranch(branchname).then _onBranch, _onBranch
 
 
 AddSongModalCtrl = ($scope, $modalInstance, title) ->
@@ -349,6 +399,7 @@ AddSongModalCtrl = ($scope, $modalInstance, title) ->
   $scope.data =
     title: title
     author: null
+    performed_by: null
     tube_id: null
     song_data: null
 
