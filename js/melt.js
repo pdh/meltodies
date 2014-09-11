@@ -20,7 +20,7 @@
   };
 
   song_template = function(scp) {
-    return "===\ntitle: " + scp.title + "\nauthor: " + scp.author + "\nperformed_by: " + scp.performed_by + "\ntube_id: " + scp.tube_id + "\n===\n" + scp.song_data;
+    return "===\ntitle: " + scp.title + "\nversion: " + scp.version + "\nauthor: " + scp.author + "\nperformed_by: " + scp.performed_by + "\ntube_id: " + scp.tube_id + "\n===\n" + scp.song_data;
   };
 
   youtube_iframe_template = function(src) {

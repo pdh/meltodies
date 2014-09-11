@@ -18,6 +18,7 @@ song_template = (scp) ->
   """
 ===
 title: #{scp.title}
+version: #{scp.version}
 author: #{scp.author}
 performed_by: #{scp.performed_by}
 tube_id: #{scp.tube_id}
