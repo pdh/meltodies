@@ -222,7 +222,7 @@
       if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
         $location.path(metal.title);
       }
-      _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)));
+      _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * 1.25 * (window.devicePixelRatio || 1)));
       document.getElementById('song-meta').innerHTML = $scope.song_meta;
       return $scope.song_edited = false;
     };
