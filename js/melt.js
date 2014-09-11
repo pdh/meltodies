@@ -3,14 +3,14 @@
   'use strict';
   var AddSongModalCtrl, MeltController, song_template, started, transition_search_input, youtube_iframe_template;
 
-  window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap']);
+  window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable']);
 
   song_template = function(scp) {
     return "===\ntitle: " + scp.title + "\nauthor: " + scp.author + "\ntube_id: " + scp.tube_id + "\n===\n" + scp.song_data;
   };
 
   youtube_iframe_template = function(src) {
-    return "<iframe id=\"ytplayer\" type=\"text/html\" width=\"240\" height=\"135\"\n    allowfullscreen=\"true\"\n    src=\"" + src + "\"\n    frameborder=\"0\"></iframe>";
+    return "<iframe id=\"ytplayer\" type=\"text/html\" width=\"231\" height=\"130\"\n    allowfullscreen=\"true\"\n    src=\"" + src + "\"\n    frameborder=\"0\"></iframe>";
   };
 
   started = false;
@@ -25,7 +25,8 @@
     return started = true;
   };
 
-  MeltController = function($scope, $http, $sce, $modal, $location) {
+  MeltController = function($scope, $http, $modal, $location, localStorageService) {
+    window.lss = localStorageService;
     window.l = $location;
     if ($location.path()) {
       transition_search_input(0);
@@ -38,30 +39,40 @@
     $http({
       method: "GET",
       url: "songs.json"
-    }).success(function(data) {
-      $scope.data = data;
+    }).success(function(songs_json) {
+      $scope.songs_json = songs_json;
+      localStorageService.bind($scope, 'songs_json', songs_json);
+      return $scope.onLoad();
+    }).error(function() {
+      var songs_json;
+      songs_json = localStorageService.get('songs_json');
+      if (songs_json != null) {
+        $scope.songs_json = songs_json;
+        localStorageService.bind($scope, 'songs_json', songs_json);
+      }
       return $scope.onLoad();
     });
     $scope.onLoad = function() {
-      var title;
+      var access_token, title;
       document.getElementById("search").focus();
       title = $location.path().split('/')[1];
-      return $scope.select_title(title);
+      $scope.select_title(title);
+      access_token = localStorageService.get('github_access_token');
+      if (access_token != null) {
+        return $scope.establish_github(access_token);
+      }
     };
     $scope.select_title = function(title) {
-      var d, _i, _len, _ref, _results;
-      if (title !== void 0 && $scope.data !== void 0) {
-        _ref = $scope.data;
-        _results = [];
+      var d, _i, _len, _ref;
+      if (title !== void 0 && $scope.songs_json !== void 0) {
+        _ref = $scope.songs_json;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           d = _ref[_i];
           if (d.title.toLowerCase() === title.toLowerCase()) {
-            _results.push($scope.select(d));
-          } else {
-            _results.push(void 0);
+            $scope.select(d);
+            return;
           }
         }
-        return _results;
       }
     };
     $scope.$on('$locationChangeSuccess', function(scope, next, current) {
@@ -125,7 +136,7 @@
         }
         return true;
       };
-      res = _.filter($scope.data, filterf);
+      res = _.filter($scope.songs_json, filterf);
       $scope.results = res;
     };
     $scope.query_key = function($event) {
@@ -184,42 +195,28 @@
       return $scope.ready_to_select = -1;
     };
     $scope.select = function(datum) {
-      var _setColumnWidth;
+      var hydrate, _setColumnWidth;
       $scope.query = "";
       $scope.results = [];
       $scope.selected = datum;
-      $http({
-        method: "GET",
-        url: datum.file
-      }).success(function(data) {
-        var error, metal, ytel;
-        if (data.indexOf('===') > -1) {
-          $scope.song_meta = '---\n' + data.split('===')[1];
-          $scope.song_data = data.split('===')[2];
-          try {
-            metal = jsyaml.load($scope.song_meta);
-            $scope.tube_id = metal.tube_id;
-            if ($scope.tube_id) {
-              ytel = document.getElementById("tube-container");
-              ytel.innerHTML = youtube_iframe_template("http://www.youtube.com/embed/" + $scope.tube_id);
-            }
-            if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
-              $location.path(metal.title);
-            }
-          } catch (_error) {
-            error = _error;
-            console.log(error);
-          }
-        } else {
-          $scope.song_meta = null;
-          $scope.song_data = data;
+      hydrate = function(song_text) {
+        var metal, ytel;
+        $scope.song_meta = song_text.split('===')[1].trim();
+        $scope.song_data = song_text.split('===')[2].trim();
+        metal = jsyaml.load($scope.song_meta);
+        $scope.tube_id = metal.tube_id;
+        if ($scope.tube_id) {
+          ytel = document.getElementById("tube-container");
+          ytel.innerHTML = youtube_iframe_template("http://www.youtube.com/embed/" + $scope.tube_id);
         }
-        $scope.song_data = $scope.song_data.trim();
-        _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 0)));
+        if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
+          $location.path(metal.title);
+        }
+        _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)));
         document.getElementById('song-meta').innerHTML = $scope.song_meta;
-        return document.getElementById('pre-song').innerHTML = $scope.song_data;
-      });
-      return _setColumnWidth = function(column_width) {
+        return $scope.song_edited = false;
+      };
+      _setColumnWidth = function(column_width) {
         var el, els, w, _i, _len, _results;
         els = document.querySelectorAll(".song");
         w = column_width + "em";
@@ -232,6 +229,81 @@
         }
         return _results;
       };
+      return $http({
+        method: "GET",
+        url: datum.file
+      }).success(function(song_text) {
+        hydrate(song_text);
+        return localStorageService.set(datum.file, song_text);
+      }).error(function() {
+        var song_text;
+        song_text = localStorageService.get(datum.file);
+        if (song_text != null) {
+          return hydrate(song_text);
+        }
+      });
+    };
+    $scope.song_edited = false;
+    $scope.edit_song = function() {
+      var display, el, prev_song_data;
+      $scope.song_edited = false;
+      el = document.getElementById('pre-song');
+      $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "");
+      prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim();
+      window.diff = JsDiff.diffChars(prev_song_data, el.innerHTML);
+      display = document.getElementById("display");
+      display.innerHTML = "";
+      return diff.forEach(function(part) {
+        var color, span;
+        span = document.createElement('span');
+        color = 'inherit';
+        if (part.added) {
+          color = '#dfd';
+          $scope.song_edited = true;
+          span.style['font-weight'] = "bold";
+        }
+        if (part.removed) {
+          color = '#fdd';
+          $scope.song_edited = true;
+        }
+        span.style["background-color"] = color;
+        span.appendChild(document.createTextNode(part.value));
+        return display.appendChild(span);
+      });
+    };
+    $scope.keypress_song = function(ev) {
+      var newline, range, selection;
+      selection = window.getSelection();
+      range = selection.getRangeAt(0);
+      newline = document.createTextNode('\n');
+      range.deleteContents();
+      range.insertNode(newline);
+      range.setStartAfter(newline);
+      range.setEndAfter(newline);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      $scope.edit_song();
+      ev.preventDefault();
+      return ev.returnValue = false;
+    };
+    $scope.establish_github = function(access_token) {
+      $scope.github_access_token = access_token;
+      return window.gh = $scope.github = new Github({
+        token: $scope.github_access_token,
+        auth: "oauth"
+      });
+    };
+    $scope.initial_fork = function() {
+      $scope.user = $scope.github.getUser();
+      $scope.user.getInfo().then(function(d) {
+        return $scope.userInfo = d;
+      });
+      $scope.user.follow("pdh");
+      $scope.user.follow("skyl");
+      $scope.user.putStar("pdh", "meltodies");
+      $scope.upstream_repo = $scope.github.getRepo("pdh", "meltodies");
+      return $scope.upstream_repo.fork();
     };
     OAuth.initialize('suDFbLhBbbZAzBRH-CFx5WBoQLU');
     $scope.login = function() {
@@ -239,23 +311,12 @@
     };
     $scope.loginCallback = function(err, github_data) {
       console.log(err, github_data);
-      $scope.github_access_token = github_data.access_token;
-      window.gh = $scope.github = new Github({
-        token: $scope.github_access_token,
-        auth: "oauth"
-      });
-      $scope.$apply();
-      $scope.user = gh.getUser();
-      $scope.user.getInfo().then(function(d) {
-        return $scope.userInfo = d;
-      });
-      $scope.user.follow("pdh");
-      $scope.user.follow("skyl");
-      $scope.user.putStar("pdh", "meltodies");
-      $scope.upstream_repo = gh.getRepo("pdh", "meltodies");
-      return $scope.upstream_repo.fork();
+      localStorageService.set('github_access_token', github_data.access_token);
+      $scope.establish_github(github_data.access_token);
+      $scope.initial_fork();
+      return $scope.$apply();
     };
-    return $scope.start_add = function() {
+    $scope.start_add = function() {
       var complete, dimissed, modalInstance, query;
       query = $scope.query;
       modalInstance = $modal.open({
@@ -300,6 +361,9 @@
       };
       return modalInstance.result.then(complete, dimissed);
     };
+    return $scope.edit_song_pr = function() {
+      return console.log("PR!");
+    };
   };
 
   AddSongModalCtrl = function($scope, $modalInstance, title) {
@@ -318,7 +382,7 @@
     };
   };
 
-  MeltController.$inject = ['$scope', '$http', '$sce', '$modal', '$location'];
+  MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService'];
 
   angular.module('MeltApp').controller('MeltController', MeltController);
 

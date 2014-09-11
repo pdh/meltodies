@@ -1,21 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="MeltApp" ng-controller="MeltController">
 <head>
   <script src="lib/angular/angular.min.js"></script>
   <script src="lib/angular-ui-utils/ui-utils.min.js"></script>
   <script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="lib/angular-local-storage/angular-local-storage.min.js"></script>
+  <script src="lib/angular-contenteditable/angular-contenteditable.js"></script>
   <script src="lib/underscore/underscore-min.js"></script>
   <script src="lib/js-yaml/dist/js-yaml.min.js"></script>
   <script src="lib/oauth-js/dist/oauth.js"></script>
   <script src="lib/octokit/octokit.js"></script>
+  <script src="lib/jsdiff/diff.js"></script>
   <script src="lib/d3/d3.min.js"></script>
   <script src="js/melt.js"></script>
 
   <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
+  <title>{{ selected.title || "Meltodies" }}</title>
 </head>
-<body ng-app="MeltApp">
-  <div ng-controller="MeltController" class="container-fluid">
+<body>
+  <div class="container-fluid">
     <div class="row start" style="margin-top:23%;margin-bottom:0.5em;">
       <div class="col-md-8">
         <input
@@ -64,8 +68,36 @@
     </div>
     <div class="row">
       <div class="song" ng-show="song_data">
-      <!-- if contenteditable, angular gets it messed up, so we set directly -->
-        <pre id="pre-song" contenteditable="true"></pre>
+        <!-- if contenteditable, angular gets it messed up, so we set directly -->
+        <pre id="pre-song"
+             contenteditable="true"
+             ng-change="edit_song()"
+             ng-model="song_data"
+             ui-keydown="{'enter': 'keypress_song($event)'}"
+        ></pre>
+      </div>
+    </div>
+    <div class="row" ng-show="song_edited && !github" style="margin-top:5px;">
+      <div class="col-xs-12">
+        <h1>Connect with Github to Save Changes</h1>
+        <button ng-click="login()" class="btn btn-primary">
+          <img src="img/octocat.png" />
+          Connect with Github
+        </button>
+      </div>
+    </div>
+    <div class="row" ng-show="song_edited && github" style="margin-top:5px;">
+      <div class="col-xs-12">
+        <button ng-click="edit_song_pr()"
+                class="btn btn-success btn-lg"
+                style="width:100%;">
+          Submit Changes as Pull Request
+        </button>
+      </div>
+    </div>
+    <div class="row" ng-show="song_edited && github" style="margin-top:5px;">
+      <div class="col-xs-12">
+        <pre id="display" class="col-xs-12" style="border: 2px solid black;"></pre>
       </div>
     </div>
   </div><!-- MeltController -->
