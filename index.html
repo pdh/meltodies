@@ -71,13 +71,13 @@
         <!-- if contenteditable, angular gets it messed up, so we set directly -->
         <pre id="pre-song"
              contenteditable="true"
-             ng-change="change_song()"
+             ng-change="edit_song()"
              ng-model="song_data"
              ui-keydown="{'enter': 'keypress_song($event)'}"
         ></pre>
       </div>
     </div>
-    <div class="row" ng-show="changed && !github" style="margin-top:5px;">
+    <div class="row" ng-show="song_edited && !github" style="margin-top:5px;">
       <div class="col-xs-12">
         <h1>Connect with Github to Save Changes</h1>
         <button ng-click="login()" class="btn btn-primary">
@@ -86,16 +86,16 @@
         </button>
       </div>
     </div>
-    <div class="row" ng-show="changed && github" style="margin-top:5px;">
+    <div class="row" ng-show="song_edited && github" style="margin-top:5px;">
       <div class="col-xs-12">
-        <button ng-click="change_song_pr()"
+        <button ng-click="edit_song_pr()"
                 class="btn btn-success btn-lg"
                 style="width:100%;">
           Submit Changes as Pull Request
         </button>
       </div>
     </div>
-    <div class="row" ng-show="changed && github" style="margin-top:5px;">
+    <div class="row" ng-show="song_edited && github" style="margin-top:5px;">
       <div class="col-xs-12">
         <pre id="display" class="col-xs-12" style="border: 2px solid black;"></pre>
       </div>

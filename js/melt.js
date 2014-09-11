@@ -213,7 +213,8 @@
           $location.path(metal.title);
         }
         _setColumnWidth(Math.round(_.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)));
-        return document.getElementById('song-meta').innerHTML = $scope.song_meta;
+        document.getElementById('song-meta').innerHTML = $scope.song_meta;
+        return $scope.song_edited = false;
       };
       _setColumnWidth = function(column_width) {
         var el, els, w, _i, _len, _results;
@@ -242,10 +243,10 @@
         }
       });
     };
-    $scope.changed = false;
-    $scope.change_song = function() {
+    $scope.song_edited = false;
+    $scope.edit_song = function() {
       var display, el, prev_song_data;
-      $scope.changed = false;
+      $scope.song_edited = false;
       el = document.getElementById('pre-song');
       $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "");
       prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim();
@@ -258,12 +259,12 @@
         color = 'inherit';
         if (part.added) {
           color = '#dfd';
-          $scope.changed = true;
+          $scope.song_edited = true;
           span.style['font-weight'] = "bold";
         }
         if (part.removed) {
           color = '#fdd';
-          $scope.changed = true;
+          $scope.song_edited = true;
         }
         span.style["background-color"] = color;
         span.appendChild(document.createTextNode(part.value));
@@ -282,7 +283,7 @@
       range.collapse(false);
       selection.removeAllRanges();
       selection.addRange(range);
-      $scope.change_song();
+      $scope.edit_song();
       ev.preventDefault();
       return ev.returnValue = false;
     };
@@ -360,7 +361,7 @@
       };
       return modalInstance.result.then(complete, dimissed);
     };
-    return $scope.change_song_pr = function() {
+    return $scope.edit_song_pr = function() {
       return console.log("PR!");
     };
   };

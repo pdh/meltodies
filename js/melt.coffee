@@ -191,6 +191,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
         _.max($scope.song_data.split("\n")).length * (window.devicePixelRatio || 1)
       )
       document.getElementById('song-meta').innerHTML = $scope.song_meta
+      $scope.song_edited = false
     _setColumnWidth = (column_width) ->
       els = document.querySelectorAll(".song")
       w = column_width + "em"
@@ -211,9 +212,10 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
         hydrate song_text
     )
 
-  $scope.changed = false
-  $scope.change_song = () ->
-    $scope.changed = false
+  $scope.song_edited = false
+  $scope.edit_song = () ->
+
+    $scope.song_edited = false
     el = document.getElementById('pre-song')
     # subtle update bugs .. make sure that we don't have any stray <br>
     $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "")
@@ -229,11 +231,11 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       color = 'inherit'
       if part.added
         color = '#dfd'  # github diff green
-        $scope.changed = true
+        $scope.song_edited = true
         span.style['font-weight'] = "bold"
       if part.removed
         color = '#fdd'
-        $scope.changed = true
+        $scope.song_edited = true
       span.style["background-color"] = color
       span.appendChild document.createTextNode part.value
       display.appendChild span
@@ -250,7 +252,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     range.collapse(false)
     selection.removeAllRanges()
     selection.addRange(range)
-    $scope.change_song()
+    $scope.edit_song()
     ev.preventDefault()
     ev.returnValue = false
 
@@ -335,7 +337,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
 
     modalInstance.result.then complete, dimissed
 
-  $scope.change_song_pr = () ->
+  $scope.edit_song_pr = () ->
     console.log "PR!"
 
 
