@@ -5,6 +5,7 @@
 git checkout master
 git pull
 git checkout gh-pages
+git pull
 git merge --no-edit master
 bower install
 ./update_songs.py
