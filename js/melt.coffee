@@ -64,7 +64,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     url: "songs.json"
   ).success((songs_json) ->
     $scope.songs_json = songs_json
-    localStorageService.bind $scope, 'songs_json', songs_json
+    localStorageService.set 'songs_json', songs_json
     $scope.onLoad()
   ).error(() ->
     # maybe we are offline or sth.

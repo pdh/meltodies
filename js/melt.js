@@ -56,7 +56,7 @@
       url: "songs.json"
     }).success(function(songs_json) {
       $scope.songs_json = songs_json;
-      localStorageService.bind($scope, 'songs_json', songs_json);
+      localStorageService.set('songs_json', songs_json);
       return $scope.onLoad();
     }).error(function() {
       var songs_json;
