@@ -33,7 +33,7 @@ class UgSpider(scrapy.Spider):
         self.artist = artist
         artist = artist.lower().replace(" ", "_")
         self.start_urls = [
-            'http://www.ultimate-guitar.com/tabs/%s_tabs.htm?no_takeover' % artist,
+            'http://www.ultimate-guitar.com/tabs/%s_tabs3.htm?no_takeover' % artist,
         ]
 
     def parse(self, response):
