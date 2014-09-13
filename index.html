@@ -54,17 +54,22 @@
           </ul>
         </div>
       </div>
-      <div class="col-md-4" ng-show="!github">
+      <div class="col-md-2" ng-show="!github">
         <button ng-click="login()" class="btn btn-primary">
           <img src="img/octocat.png" />
           Connect with Github
         </button>
       </div>
+      <div class="col-md-2">
+        <button ng-click="select_random_song()" class="btn">
+          <img src="img/random-icon.png" width="33" height="33" title="Select Random Song" />
+        </button>
+      </div>
+
     </div><!-- row #start -->
     <div class="row song-meta-container" ng-show="song_meta">
       <pre class="col-md-6" id="song-meta"></pre>
-      <div class="col-md-6" id="tube-container" ng-show="tube_id">
-      </div>
+      <div class="col-md-6" id="tube-container" ng-show="tube_id"></div>
     </div>
     <div class="row">
       <div class="song" ng-show="song_data">

@@ -257,6 +257,14 @@
         }
       });
     };
+    $scope.select_random_song = function() {
+      var item;
+      if (!started) {
+        transition_search_input();
+      }
+      item = $scope.songs_json[Math.floor(Math.random() * $scope.songs_json.length)];
+      return $scope.select(item);
+    };
     $scope.song_edited = false;
     $scope.edit_song = function() {
       var display, el, prev_song_data;

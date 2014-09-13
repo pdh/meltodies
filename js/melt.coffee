@@ -229,6 +229,12 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
         hydrate song_text
     )
 
+  $scope.select_random_song = () ->
+    if not started
+      transition_search_input()
+    item = $scope.songs_json[Math.floor(Math.random() * $scope.songs_json.length)]
+    $scope.select item
+
   $scope.song_edited = false
   $scope.edit_song = () ->
 
