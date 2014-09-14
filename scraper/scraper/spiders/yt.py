@@ -20,11 +20,19 @@ def get_top_id(query):
         YOUTUBE_API_VERSION,
         developerKey=DEVELOPER_KEY
     )
-    search_response = youtube.search().list(
-        q=query,
-        part="id",
-        maxResults=10
-    ).execute()
+    try:
+        search_response = youtube.search().list(
+            q=query,
+            part="id",
+            maxResults=10
+        ).execute()
+    except:
+        # you would think that google doesn't suck.
+        # but, sometimes you are surprised, I guess.
+        # apiclient.errors.HttpError: <HttpError 403 when requesting
+        # https://www.googleapis.com/youtube/v3/search?q=...&alt=json&part=id&key=AIzaSyAt9oNWxCBs5OiCG4xHdexAdsyh1lP_AYc&maxResults=10
+        # returned "Access Not Configured. Please use Google Developers Console to activate the API for your project.">
+        return ""
     # just return the ID for the first video
     for search_result in search_response.get("items", []):
         if search_result["id"]["kind"] == "youtube#video":
