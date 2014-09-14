@@ -31,7 +31,7 @@ tube_id: #{scp.tube_id}
 # we just destroy and replace
 youtube_iframe_template = (src) ->
   """
-<iframe id="ytplayer" type="text/html" width="231" height="130"
+<iframe id="ytplayer" type="text/html" width="213" height="130"
     allowfullscreen="true"
     src="#{src}"
     frameborder="0"></iframe>
@@ -249,7 +249,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     display.innerHTML = ""
     diff.forEach (part) ->
       # green for additions, red for deletions
-      # grey for common parts
       span = document.createElement('span')
       color = 'inherit'
       if part.added
