@@ -381,8 +381,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     changes = {}
     path = "melts/#{filename}"
 
-    # does this remove the file?
-    changes[old_filepath] = ""
     changes[path] = file_text
 
     user_repo = $scope.github.getRepo $scope.userInfo.login, "meltodies"
@@ -390,19 +388,21 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
 
     _onBranch = () ->
       branch = user_repo.getBranch(branchname)
-      # TODO - error handling
+      # Doesn't seem to be a way to do this with one commit!
+      # TODO - try other JS Github APIs .. octokat instead of octokit?
       branch.writeMany(changes, "Edit #{context.title}").then () ->
-        $scope.upstream_repo.createPullRequest
-          "title": "Edit #{context.title}"
-          "head": "#{$scope.userInfo.login}:#{branchname}"
-          "base": "master"
+        branch.remove(old_filepath).then () ->
+          $scope.upstream_repo.createPullRequest
+            "title": "Edit #{context.title}"
+            "head": "#{$scope.userInfo.login}:#{branchname}"
+            "base": "master"
 
-        hydrate file_text
-        localStorageService.set "override::#{path}", "please"
-        #console.log "WE WROTE!", path
-        localStorageService.set path, file_text
-        $scope.song_edited = false
-        $scope.$apply()
+          hydrate file_text
+          localStorageService.set "override::#{path}", "please"
+          #console.log "WE WROTE!", path
+          localStorageService.set path, file_text
+          $scope.song_edited = false
+          $scope.$apply()
 
     master.createBranch(branchname).then _onBranch, _onBranch
 
