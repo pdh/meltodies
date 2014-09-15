@@ -323,6 +323,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       # TODO - people can make illegal titles?
       branchname = data.title.toLowerCase().replace /\ /g, '_'
       version = CryptoJS.MD5(data.song_data.trim()).toString()
+      data["version"] = version
       filename = "#{branchname}_#{version}.melt"
       file = song_template(data)
       user_repo = $scope.github.getRepo $scope.userInfo.login, "meltodies"
