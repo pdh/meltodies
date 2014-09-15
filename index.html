@@ -12,6 +12,7 @@
   <script src="lib/octokit/octokit.js"></script>
   <script src="lib/jsdiff/diff.js"></script>
   <script src="lib/d3/d3.min.js"></script>
+  <script src="lib/cryptojslib/rollups/md5.js"></script>
   <script src="js/melt.js"></script>
 
   <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css">
@@ -43,7 +44,7 @@
                 ng-mouseover="mouseover($index)"
                 ng-mouseleave="mouseleave($index)"
             >
-              <span>{{ melt.title }} {{ melt.version }}</span>
+              <span>{{ melt.title }} {{ melt.version.slice(0, 4) }}</span>
             </li>
             <li ng-show="results.length == 0 && query.length > 3 && github">
               <button ng-click="start_add()"

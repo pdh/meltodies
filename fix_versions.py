@@ -30,7 +30,8 @@ for melt in os.listdir(MELT_DIR):
         meta = txt.split("===")[1]
         meta = yaml.load(meta)
         content = txt.split("===")[2]
-        version = hashlib.md5(content.encode('utf-8').strip()).hexdigest()
+        version = hashlib.md5(content.strip().encode('utf-8')).hexdigest()
+        print version
         if version in versions:
             #print "DUPLICATE!"
             pass
