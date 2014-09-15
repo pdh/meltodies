@@ -352,6 +352,7 @@
         var branchname, changes, file, filename, master, path, user_repo, version, _onBranch;
         branchname = data.title.toLowerCase().replace(/\ /g, '_');
         version = CryptoJS.MD5(data.song_data.trim()).toString();
+        data["version"] = version;
         filename = "" + branchname + "_" + version + ".melt";
         file = song_template(data);
         user_repo = $scope.github.getRepo($scope.userInfo.login, "meltodies");
