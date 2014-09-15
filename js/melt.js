@@ -399,7 +399,6 @@
       file_text = song_template(context);
       changes = {};
       path = "melts/" + filename;
-      changes[old_filepath] = "";
       changes[path] = file_text;
       user_repo = $scope.github.getRepo($scope.userInfo.login, "meltodies");
       master = user_repo.getBranch('master');
@@ -407,16 +406,18 @@
         var branch;
         branch = user_repo.getBranch(branchname);
         return branch.writeMany(changes, "Edit " + context.title).then(function() {
-          $scope.upstream_repo.createPullRequest({
-            "title": "Edit " + context.title,
-            "head": "" + $scope.userInfo.login + ":" + branchname,
-            "base": "master"
+          return branch.remove(old_filepath).then(function() {
+            $scope.upstream_repo.createPullRequest({
+              "title": "Edit " + context.title,
+              "head": "" + $scope.userInfo.login + ":" + branchname,
+              "base": "master"
+            });
+            hydrate(file_text);
+            localStorageService.set("override::" + path, "please");
+            localStorageService.set(path, file_text);
+            $scope.song_edited = false;
+            return $scope.$apply();
           });
-          hydrate(file_text);
-          localStorageService.set("override::" + path, "please");
-          localStorageService.set(path, file_text);
-          $scope.song_edited = false;
-          return $scope.$apply();
         });
       };
       return master.createBranch(branchname).then(_onBranch, _onBranch);
