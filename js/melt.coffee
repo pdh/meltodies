@@ -322,7 +322,8 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     complete = (data) ->
       # TODO - people can make illegal titles?
       branchname = data.title.toLowerCase().replace /\ /g, '_'
-      filename = "#{branchname}.melt"
+      version = CryptoJS.MD5(data.song_data.trim()).toString()
+      filename = "#{branchname}_#{version}.melt"
       file = song_template(data)
       user_repo = $scope.github.getRepo $scope.userInfo.login, "meltodies"
       master = user_repo.getBranch('master')
@@ -363,11 +364,14 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     # TODO - edit metadata
     # TODO - DRY some of this up?
     branchname = $scope.selected.title.toLowerCase().replace /\ /g, '_'
-    filename = "#{branchname}.melt"
+    new_version = CryptoJS.MD5($scope.song_data.trim()).toString()
+    # heuristic ...
+    old_filepath = "melts/#{branchname}_#{$scope.selected.version}.melt"
+    filename = "#{branchname}_#{new_version}.melt"
     context = {
       title: $scope.selected.title
       author: $scope.selected.author
-      version: $scope.selected.version
+      version: new_version
       performed_by: $scope.selected.performed_by
       tube_id: $scope.selected.tube_id
       song_data: $scope.song_data
@@ -375,6 +379,8 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     file_text = song_template context
     changes = {}
     path = "melts/#{filename}"
+
+    changes[old_filepath] = null
     changes[path] = file_text
 
     user_repo = $scope.github.getRepo $scope.userInfo.login, "meltodies"

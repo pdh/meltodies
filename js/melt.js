@@ -349,9 +349,10 @@
         }
       });
       complete = function(data) {
-        var branchname, changes, file, filename, master, path, user_repo, _onBranch;
+        var branchname, changes, file, filename, master, path, user_repo, version, _onBranch;
         branchname = data.title.toLowerCase().replace(/\ /g, '_');
-        filename = "" + branchname + ".melt";
+        version = CryptoJS.MD5(data.song_data.trim()).toString();
+        filename = "" + branchname + "_" + version + ".melt";
         file = song_template(data);
         user_repo = $scope.github.getRepo($scope.userInfo.login, "meltodies");
         master = user_repo.getBranch('master');
@@ -381,13 +382,15 @@
       return modalInstance.result.then(complete, dimissed);
     };
     return $scope.edit_song_pr = function() {
-      var branchname, changes, context, file_text, filename, master, path, user_repo, _onBranch;
+      var branchname, changes, context, file_text, filename, master, new_version, old_filepath, path, user_repo, _onBranch;
       branchname = $scope.selected.title.toLowerCase().replace(/\ /g, '_');
-      filename = "" + branchname + ".melt";
+      new_version = CryptoJS.MD5($scope.song_data.trim()).toString();
+      old_filepath = "melts/" + branchname + "_" + $scope.selected.version + ".melt";
+      filename = "" + branchname + "_" + new_version + ".melt";
       context = {
         title: $scope.selected.title,
         author: $scope.selected.author,
-        version: $scope.selected.version,
+        version: new_version,
         performed_by: $scope.selected.performed_by,
         tube_id: $scope.selected.tube_id,
         song_data: $scope.song_data
@@ -395,6 +398,7 @@
       file_text = song_template(context);
       changes = {};
       path = "melts/" + filename;
+      changes[old_filepath] = null;
       changes[path] = file_text;
       user_repo = $scope.github.getRepo($scope.userInfo.login, "meltodies");
       master = user_repo.getBranch('master');
