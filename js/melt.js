@@ -399,7 +399,7 @@
       file_text = song_template(context);
       changes = {};
       path = "melts/" + filename;
-      changes[old_filepath] = null;
+      changes[old_filepath] = "";
       changes[path] = file_text;
       user_repo = $scope.github.getRepo($scope.userInfo.login, "meltodies");
       master = user_repo.getBranch('master');
