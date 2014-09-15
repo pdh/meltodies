@@ -381,7 +381,8 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     changes = {}
     path = "melts/#{filename}"
 
-    changes[old_filepath] = null
+    # does this remove the file?
+    changes[old_filepath] = ""
     changes[path] = file_text
 
     user_repo = $scope.github.getRepo $scope.userInfo.login, "meltodies"
