@@ -16,18 +16,25 @@ YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
 
-@retry(wait_fixed=1000, stop_max_attempt_number=5)
 def get_top_id(query):
     youtube = build(
         YOUTUBE_API_SERVICE_NAME,
         YOUTUBE_API_VERSION,
         developerKey=DEVELOPER_KEY
     )
-    search_response = youtube.search().list(
-        q=query,
-        part="id",
-        maxResults=10
-    ).execute()
+
+    @retry(wait_fixed=1000, stop_max_attempt_number=3)
+    def retry_execute():
+        return youtube.search().list(
+            q=query,
+            part="id",
+            maxResults=10
+        ).execute()
+    try:
+        search_result = retry_execute()
+    except:
+        print "------------------------------------FAIL"
+        return ""
     # just return the ID for the first video
     for search_result in search_response.get("items", []):
         if search_result["id"]["kind"] == "youtube#video":
