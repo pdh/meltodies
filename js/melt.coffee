@@ -296,14 +296,25 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     $scope.user.putStar "pdh", "meltodies"
     $scope.upstream_repo = $scope.github.getRepo "pdh", "meltodies"
     $scope.upstream_repo.fork()
+
     # TODO - need to make sure that our master
     # is merged with upstream so that we can minimize conflicts
+    # and, when we edit
+    # http://stackoverflow.com/q/25859077/177293
+    # For now, the solution is suck
+    # delete your fork.
+    # logout of github manually -
+    # js console
+    # > lss.set("github_access_token")
+    # the repos need to be synced b/c, when we edit, we delete
+    # the older version (rename the file)
+
 
   OAuth.initialize 'suDFbLhBbbZAzBRH-CFx5WBoQLU'
   $scope.login = () ->
     OAuth.popup 'github', $scope.loginCallback
   $scope.loginCallback = (err, github_data) ->
-    console.log err, github_data
+    #console.log err, github_data
     localStorageService.set 'github_access_token', github_data.access_token
     $scope.establish_github github_data.access_token
     $scope.$apply()
@@ -387,23 +398,28 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     master = user_repo.getBranch('master')
 
     _onBranch = () ->
+      #console.log "_onBranch"
       branch = user_repo.getBranch(branchname)
       # Doesn't seem to be a way to do this with one commit!
       # TODO - try other JS Github APIs .. octokat instead of octokit?
-      branch.writeMany(changes, "Edit #{context.title}").then () ->
-        branch.remove(old_filepath).then () ->
+      _remove_and_pr = () ->
+        #console.log "remove", old_filepath
+        _pr = () ->
+          #console.log "PR!"
           $scope.upstream_repo.createPullRequest
             "title": "Edit #{context.title}"
             "head": "#{$scope.userInfo.login}:#{branchname}"
             "base": "master"
-
           hydrate file_text
           localStorageService.set "override::#{path}", "please"
           #console.log "WE WROTE!", path
           localStorageService.set path, file_text
           $scope.song_edited = false
           $scope.$apply()
-
+        # error or not, just do it.
+        branch.remove(old_filepath, "Remove #{old_filepath}").then _pr, _pr
+      # whether we can write or not, we remove and PR .. hrm ..
+      branch.writeMany(changes, "Edit #{context.title}").then _remove_and_pr, _remove_and_pr
     master.createBranch(branchname).then _onBranch, _onBranch
 
 

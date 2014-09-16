@@ -330,7 +330,6 @@
       return OAuth.popup('github', $scope.loginCallback);
     };
     $scope.loginCallback = function(err, github_data) {
-      console.log(err, github_data);
       localStorageService.set('github_access_token', github_data.access_token);
       $scope.establish_github(github_data.access_token);
       return $scope.$apply();
@@ -403,10 +402,11 @@
       user_repo = $scope.github.getRepo($scope.userInfo.login, "meltodies");
       master = user_repo.getBranch('master');
       _onBranch = function() {
-        var branch;
+        var branch, _remove_and_pr;
         branch = user_repo.getBranch(branchname);
-        return branch.writeMany(changes, "Edit " + context.title).then(function() {
-          return branch.remove(old_filepath).then(function() {
+        _remove_and_pr = function() {
+          var _pr;
+          _pr = function() {
             $scope.upstream_repo.createPullRequest({
               "title": "Edit " + context.title,
               "head": "" + $scope.userInfo.login + ":" + branchname,
@@ -417,8 +417,10 @@
             localStorageService.set(path, file_text);
             $scope.song_edited = false;
             return $scope.$apply();
-          });
-        });
+          };
+          return branch.remove(old_filepath, "Remove " + old_filepath).then(_pr, _pr);
+        };
+        return branch.writeMany(changes, "Edit " + context.title).then(_remove_and_pr, _remove_and_pr);
       };
       return master.createBranch(branchname).then(_onBranch, _onBranch);
     };
