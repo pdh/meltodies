@@ -3,6 +3,7 @@ import os
 import re
 import random
 import codecs
+import hashlib
 import scrapy
 
 from yt import get_top_id
