@@ -4,6 +4,8 @@ from apiclient.discovery import build
 from apiclient.errors import HttpError
 from oauth2client.tools import argparser
 
+from retrying import retry
+
 
 # Set DEVELOPER_KEY to the API key value from the APIs & auth > Registered apps
 # tab of
@@ -20,18 +22,32 @@ def get_top_id(query):
         YOUTUBE_API_VERSION,
         developerKey=DEVELOPER_KEY
     )
+<<<<<<< HEAD
     try:
         search_response = youtube.search().list(
+=======
+
+    @retry(wait_fixed=1000, stop_max_attempt_number=3)
+    def retry_execute():
+        return youtube.search().list(
+>>>>>>> master
             q=query,
             part="id",
             maxResults=10
         ).execute()
+<<<<<<< HEAD
     except:
         # you would think that google doesn't suck.
         # but, sometimes you are surprised, I guess.
         # apiclient.errors.HttpError: <HttpError 403 when requesting
         # https://www.googleapis.com/youtube/v3/search?q=...&alt=json&part=id&key=AIzaSyAt9oNWxCBs5OiCG4xHdexAdsyh1lP_AYc&maxResults=10
         # returned "Access Not Configured. Please use Google Developers Console to activate the API for your project.">
+=======
+    try:
+        search_response = retry_execute()
+    except:
+        print "------------------------------------FAIL"
+>>>>>>> master
         return ""
     # just return the ID for the first video
     for search_result in search_response.get("items", []):
