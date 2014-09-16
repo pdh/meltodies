@@ -195,7 +195,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     if metal.title.toLowerCase() isnt $location.path().toLowerCase()
       $location.path metal.title
     _setColumnWidth Math.round(
-      _.max($scope.song_data.split("\n")).length * 1.25 * (window.devicePixelRatio || 1)
+      _.max($scope.song_data.split("\n"), (i) -> i.length).length * 0.618 * (window.devicePixelRatio || 1)
     )
     document.getElementById('song-meta').innerHTML = $scope.song_meta
     $scope.song_edited = false
