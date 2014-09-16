@@ -60,7 +60,7 @@ class UgSpider(scrapy.Spider):
                 title = str(insensitive_chords.sub('', title)).strip()
                 # remove tags, convert line endings
                 content = re.sub('<[^<]+?>', '', raw[0])
-                content = content.replace(r'\r\n', r'\n')
+                content = content.replace('\r\n', '\n')
                 version = hashlib.md5(content.strip().encode('utf-8')).hexdigest()
 
                 filename = "{title}_{version}.melt".format(

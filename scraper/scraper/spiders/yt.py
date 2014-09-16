@@ -16,7 +16,7 @@ YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
 
-@retry(wait_fixed=1000, stop_max_attempt_number=3)
+@retry(wait_fixed=1000, stop_max_attempt_number=5)
 def get_top_id(query):
     youtube = build(
         YOUTUBE_API_SERVICE_NAME,
