@@ -4,6 +4,8 @@ from apiclient.discovery import build
 from apiclient.errors import HttpError
 from oauth2client.tools import argparser
 
+from retrying import retry
+
 
 # Set DEVELOPER_KEY to the API key value from the APIs & auth > Registered apps
 # tab of
@@ -14,6 +16,7 @@ YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
 
+@retry(wait_fixed=1000, stop_max_attempt_number=3)
 def get_top_id(query):
     youtube = build(
         YOUTUBE_API_SERVICE_NAME,

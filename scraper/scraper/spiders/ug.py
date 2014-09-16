@@ -32,11 +32,16 @@ class UgSpider(scrapy.Spider):
             raise Exception("artist must be specified")
         self.artist = artist
         artist = artist.lower().replace(" ", "_")
+        # Dylan has 14 pages. Does anyone have more on UG?
         self.start_urls = [
-            'http://www.ultimate-guitar.com/tabs/%s_tabs3.htm?no_takeover' % artist,
+            'http://www.ultimate-guitar.com/tabs/%s_tabs%s.htm?no_takeover' % (artist, page)
+            for page in range(1, 16)
         ]
 
     def parse(self, response):
+        if response.status == 404:
+            print "EXITING", response
+            raise scrapy.exceptions.CloseSpider("Artist Exhausted.")
         #/html/body/center/div/table/tr/td/table/tr/td[2]/table/tr[3]/td/table[2]/tr[6]/td[1]/a
         #/html/body/center/div/table/tr/td/table/tr/td[2]/table/tr[2]/td/table[2]/tbody/tr[2]/td[1]/a
 
@@ -50,28 +55,29 @@ class UgSpider(scrapy.Spider):
             if raw:
                 title = response.xpath("//h1/text()").extract()[0]
                 insensitive_chords = re.compile(re.escape('chords'), re.IGNORECASE)
+                # remove the word chords from title
                 title = str(insensitive_chords.sub('', title)).strip()
-                otitle = title
-
-                filename = title.lower().replace(" ", "_") + ".melt"
-                filepath = os.path.join("..", "melts", filename)
-                version = ""
-                if os.path.exists(filepath):
-                    version = "%x" % random.getrandbits(32)
-                    title += " %s" % version
-                    filename = title.lower().replace(" ", "_") + ".melt"
-                    filepath = os.path.join("..", "melts", filename)
-
-                # author/performed_by ...
-                # TODO - people don't even get this right .. hrm ..
-                # might have to curate this by hand for a while
-                author = self.artist
-                performed_by = self.artist
+                # remove tags, convert line endings
                 content = re.sub('<[^<]+?>', '', raw[0])
                 content = content.replace(r'\r\n', r'\n')
-                tube_id = get_top_id("%s %s" % (self.artist, otitle))
+                version = hashlib.md5(content.strip().encode('utf-8')).hexdigest()
+
+                filename = "{title}_{version}.melt".format(
+                    title=title.lower().replace(" ", "_"),
+                    version=version
+                )
+                filepath = os.path.join("..", "melts", filename)
+                if os.path.exists(filepath):
+                    # we rely that the hash in the filepath is correct
+                    # to prevent duplicates.
+                    yield
+
+                author = self.artist
+                performed_by = self.artist
+
+                tube_id = get_top_id("%s %s" % (self.artist, title))
                 file_text = file_template.format(
-                    title=otitle,
+                    title=title,
                     author=author,
                     performed_by=performed_by,
                     tube_id=tube_id,
