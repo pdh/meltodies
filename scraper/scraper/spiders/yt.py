@@ -31,7 +31,7 @@ def get_top_id(query):
             maxResults=10
         ).execute()
     try:
-        search_result = retry_execute()
+        search_response = retry_execute()
     except:
         print "------------------------------------FAIL"
         return ""
