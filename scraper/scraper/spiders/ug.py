@@ -36,7 +36,7 @@ class UgSpider(scrapy.Spider):
         # Dylan has 14 pages. Does anyone have more on UG?
         self.start_urls = [
             'http://www.ultimate-guitar.com/tabs/%s_tabs%s.htm?no_takeover' % (artist, page)
-            for page in range(1, 2)
+            for page in range(1, 20)
         ]
 
     def parse(self, response):
@@ -73,20 +73,19 @@ class UgSpider(scrapy.Spider):
                     # to prevent duplicates.
                     yield
 
-                author = self.artist
-                performed_by = self.artist
+                else:
+                    author = self.artist
+                    performed_by = self.artist
 
-                tube_id = get_top_id("%s %s" % (self.artist, title))
-                file_text = file_template.format(
-                    title=title,
-                    author=author,
-                    performed_by=performed_by,
-                    tube_id=tube_id,
-                    content=content,
-                    version=version,
-                )
+                    tube_id = get_top_id("%s %s" % (self.artist, title))
+                    file_text = file_template.format(
+                        title=title,
+                        author=author,
+                        performed_by=performed_by,
+                        tube_id=tube_id,
+                        content=content,
+                        version=version,
+                    )
 
-                with codecs.open(filepath, "w", encoding="utf-8") as f:
-                    f.write(file_text)
-                #print file_text
-                #yield ScraperItem(content=content)
+                    with codecs.open(filepath, "w", encoding="utf-8") as f:
+                        f.write(file_text)
