@@ -1,7 +1,7 @@
 'use strict'
 
 window.MeltApp = angular.module 'MeltApp', [
-  'ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable'
+  'ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable',
 ]
 
 
@@ -40,6 +40,8 @@ youtube_iframe_template = (src) ->
 # search
 started = false
 transition_search_input = (duration=100) ->
+  if started
+    return
   s = d3.select(".start")
   # more duration once this gets worked out.
   # http://stackoverflow.com/q/25714744/177293
@@ -80,11 +82,21 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     # called when songs.json == data comes back
     document.getElementById("search").focus()
     # angular way to get path without / ?
-    title = $location.path().split('/')[1]
-    $scope.select_title title
+    [title, version] = $location.path().split('/')[1].split('::')
+    console.log title, version
+    $scope.select_version version, title
     access_token = localStorageService.get 'github_access_token'
     if access_token?
       $scope.establish_github access_token
+
+  $scope.select_version = (version, title) ->
+    if version? and $scope.songs_json?
+      for d in $scope.songs_json
+        if d.version == version
+          $scope.select d
+          return
+
+    $scope.select_title title
 
   $scope.select_title = (title) ->
     if title isnt undefined and $scope.songs_json isnt undefined
@@ -96,7 +108,8 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
           return
 
   $scope.$on '$locationChangeSuccess', (scope, next, current) ->
-    $scope.select_title $location.path().split('/')[1]
+    [title, version] = $location.path().split('/')[1].split('::')
+    $scope.select_version version, title
 
   $scope.update_results = ->
     if not started
@@ -193,7 +206,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
         "http://www.youtube.com/embed/#{$scope.tube_id}"
       )
     if metal.title.toLowerCase() isnt $location.path().toLowerCase()
-      $location.path metal.title
+      $location.path "#{metal.title}::#{metal.version}"
     _setColumnWidth Math.round(
       _.max(
         $scope.song_data.split("\n"),
@@ -204,6 +217,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     $scope.song_edited = false
 
   $scope.select = (datum) ->
+    transition_search_input()
     $scope.query = ""
     $scope.results = []
     $scope.selected = datum

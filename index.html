@@ -108,6 +108,11 @@
         <pre id="display" class="col-xs-12" style="border: 2px solid black;"></pre>
       </div>
     </div>
+    <div ng-show="!selected">
+    <a ng-repeat="s in songs_json" href="#/{{ s.title }}::{{ s.version }}">
+      {{ s.title }}
+    </a>
+    </div>
   </div><!-- MeltController -->
 </body>
 </html>

@@ -34,6 +34,9 @@
     if (duration == null) {
       duration = 100;
     }
+    if (started) {
+      return;
+    }
     s = d3.select(".start");
     s.transition().duration(duration).style("margin-top", "1%");
     return started = true;
@@ -68,14 +71,29 @@
       return $scope.onLoad();
     });
     $scope.onLoad = function() {
-      var access_token, title;
+      var access_token, title, version, _ref;
       document.getElementById("search").focus();
-      title = $location.path().split('/')[1];
-      $scope.select_title(title);
+      _ref = $location.path().split('/')[1].split('::'), title = _ref[0], version = _ref[1];
+      console.log(title, version);
+      $scope.select_version(version, title);
       access_token = localStorageService.get('github_access_token');
       if (access_token != null) {
         return $scope.establish_github(access_token);
       }
+    };
+    $scope.select_version = function(version, title) {
+      var d, _i, _len, _ref;
+      if ((version != null) && ($scope.songs_json != null)) {
+        _ref = $scope.songs_json;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          d = _ref[_i];
+          if (d.version === version) {
+            $scope.select(d);
+            return;
+          }
+        }
+      }
+      return $scope.select_title(title);
     };
     $scope.select_title = function(title) {
       var d, _i, _len, _ref;
@@ -91,7 +109,9 @@
       }
     };
     $scope.$on('$locationChangeSuccess', function(scope, next, current) {
-      return $scope.select_title($location.path().split('/')[1]);
+      var title, version, _ref;
+      _ref = $location.path().split('/')[1].split('::'), title = _ref[0], version = _ref[1];
+      return $scope.select_version(version, title);
     });
     $scope.update_results = function() {
       var a, a_search, authorstrs, authstr, filtered_words, res, w, words;
@@ -220,7 +240,7 @@
         ytel.innerHTML = youtube_iframe_template("http://www.youtube.com/embed/" + $scope.tube_id);
       }
       if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
-        $location.path(metal.title);
+        $location.path("" + metal.title + "::" + metal.version);
       }
       _setColumnWidth(Math.round(_.max($scope.song_data.split("\n"), function(i) {
         return i.length;
@@ -230,6 +250,7 @@
     };
     $scope.select = function(datum) {
       var local_override, override_key, override_text;
+      transition_search_input();
       $scope.query = "";
       $scope.results = [];
       $scope.selected = datum;
