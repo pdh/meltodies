@@ -71,11 +71,13 @@
       return $scope.onLoad();
     });
     $scope.onLoad = function() {
-      var access_token, title, version, _ref;
+      var access_token, path, title, version, _ref;
       document.getElementById("search").focus();
-      _ref = $location.path().split('/')[1].split('::'), title = _ref[0], version = _ref[1];
-      console.log(title, version);
-      $scope.select_version(version, title);
+      path = $location.path().split('/')[1];
+      if (path !== void 0) {
+        _ref = path.split('::'), title = _ref[0], version = _ref[1];
+        $scope.select_version(version, title);
+      }
       access_token = localStorageService.get('github_access_token');
       if (access_token != null) {
         return $scope.establish_github(access_token);
@@ -109,9 +111,12 @@
       }
     };
     $scope.$on('$locationChangeSuccess', function(scope, next, current) {
-      var title, version, _ref;
-      _ref = $location.path().split('/')[1].split('::'), title = _ref[0], version = _ref[1];
-      return $scope.select_version(version, title);
+      var path, title, version, _ref;
+      path = $location.path().split('/')[1];
+      if (path !== void 0) {
+        _ref = path.split('::'), title = _ref[0], version = _ref[1];
+        return $scope.select_version(version, title);
+      }
     });
     $scope.update_results = function() {
       var a, a_search, authorstrs, authstr, filtered_words, res, w, words;

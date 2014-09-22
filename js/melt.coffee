@@ -82,9 +82,10 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     # called when songs.json == data comes back
     document.getElementById("search").focus()
     # angular way to get path without / ?
-    [title, version] = $location.path().split('/')[1].split('::')
-    console.log title, version
-    $scope.select_version version, title
+    path = $location.path().split('/')[1]
+    if path isnt undefined
+      [title, version] = path.split('::')
+      $scope.select_version version, title
     access_token = localStorageService.get 'github_access_token'
     if access_token?
       $scope.establish_github access_token
@@ -108,8 +109,10 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
           return
 
   $scope.$on '$locationChangeSuccess', (scope, next, current) ->
-    [title, version] = $location.path().split('/')[1].split('::')
-    $scope.select_version version, title
+    path = $location.path().split('/')[1]
+    if path isnt undefined
+      [title, version] = path.split('::')
+      $scope.select_version version, title
 
   $scope.update_results = ->
     if not started
