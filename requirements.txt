@@ -15,6 +15,7 @@ pyasn1==0.1.7
 pyasn1-modules==0.0.5
 pycparser==2.10
 queuelib==1.2.2
+retrying==1.2.3
 service-identity==14.0.0
 six==1.7.3
 w3lib==1.10.0
