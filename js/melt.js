@@ -83,47 +83,6 @@
         return $scope.establish_github(access_token);
       }
     };
-    $scope.select_version = function(version, title, reset_results) {
-      var d, _i, _len, _ref;
-      if (reset_results == null) {
-        reset_results = true;
-      }
-      if ((version != null) && ($scope.songs_json != null)) {
-        _ref = $scope.songs_json;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          d = _ref[_i];
-          if (d.version === version) {
-            $scope.select(d, reset_results);
-            return;
-          }
-        }
-      }
-      return $scope.select_title(title, reset_results);
-    };
-    $scope.select_title = function(title, reset_results) {
-      var d, _i, _len, _ref;
-      if (reset_results == null) {
-        reset_results = true;
-      }
-      if (title !== void 0 && $scope.songs_json !== void 0) {
-        _ref = $scope.songs_json;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          d = _ref[_i];
-          if (d.title.toLowerCase() === title.toLowerCase()) {
-            $scope.select(d, reset_results);
-            return;
-          }
-        }
-      }
-    };
-    $scope.$on('$locationChangeSuccess', function(scope, next, current) {
-      var path, title, version, _ref;
-      path = $location.path().split('/')[1];
-      if (path !== void 0) {
-        _ref = path.split('::'), title = _ref[0], version = _ref[1];
-        return $scope.select_version(version, title, false);
-      }
-    });
     $scope.update_results = function() {
       var a, a_search, authorstrs, authstr, filtered_words, res, w, words;
       if (!started) {
@@ -293,7 +252,7 @@
           return;
         }
         hydrate(song_text);
-        return localStorageService.set(datum.file, song_text);
+        return localStorageService.set(datum.version, song_text);
       }).error(function() {
         var song_text;
         song_text = localStorageService.get(datum.file);
@@ -316,6 +275,52 @@
       $scope.select(item, false);
       return document.getElementById("search").focus();
     };
+    $scope.select_version = function(version, title, reset_results) {
+      var d, existing, _i, _len, _ref;
+      if (reset_results == null) {
+        reset_results = true;
+      }
+      existing = localStorageService.get(version);
+      if (existing != null) {
+        hydrate(existing);
+        return;
+      }
+      if ((version != null) && ($scope.songs_json != null)) {
+        _ref = $scope.songs_json;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          d = _ref[_i];
+          if (d.version === version) {
+            $scope.select(d, reset_results);
+            return;
+          }
+        }
+      }
+      return $scope.select_title(title, reset_results);
+    };
+    $scope.select_title = function(title, reset_results) {
+      var d, _i, _len, _ref;
+      if (reset_results == null) {
+        reset_results = true;
+      }
+      if (title !== void 0 && $scope.songs_json !== void 0) {
+        _ref = $scope.songs_json;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          d = _ref[_i];
+          if (d.title.toLowerCase() === title.toLowerCase()) {
+            $scope.select(d, reset_results);
+            return;
+          }
+        }
+      }
+    };
+    $scope.$on('$locationChangeSuccess', function(scope, next, current) {
+      var path, title, version, _ref;
+      path = $location.path().split('/')[1];
+      if (path !== void 0) {
+        _ref = path.split('::'), title = _ref[0], version = _ref[1];
+        return $scope.select_version(version, title, false);
+      }
+    });
     $scope.song_edited = false;
     $scope.edit_song = function() {
       var display, el, prev_song_data;
