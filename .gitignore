@@ -1,4 +1,5 @@
 *.swp
 songs.json
 *.pyc
+.DS_Store
 

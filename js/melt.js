@@ -43,7 +43,7 @@
   };
 
   MeltController = function($scope, $http, $modal, $location, localStorageService) {
-    var hydrate;
+    var get_data_from_version, hydrate;
     window.lss = localStorageService;
     window.l = $location;
     if ($location.path()) {
@@ -275,25 +275,33 @@
       $scope.select(item, false);
       return document.getElementById("search").focus();
     };
-    $scope.select_version = function(version, title, reset_results) {
-      var d, existing, _i, _len, _ref;
-      if (reset_results == null) {
-        reset_results = true;
-      }
-      existing = localStorageService.get(version);
-      if (existing != null) {
-        hydrate(existing);
-        return;
-      }
+    get_data_from_version = function(version) {
+      var d, _i, _len, _ref;
       if ((version != null) && ($scope.songs_json != null)) {
         _ref = $scope.songs_json;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           d = _ref[_i];
           if (d.version === version) {
-            $scope.select(d, reset_results);
-            return;
+            return d;
           }
         }
+      }
+    };
+    $scope.select_version = function(version, title, reset_results) {
+      var d, existing;
+      if (reset_results == null) {
+        reset_results = true;
+      }
+      d = get_data_from_version(version);
+      existing = localStorageService.get(version);
+      if ((existing != null) && (d != null)) {
+        hydrate(existing);
+        $scope.selected = d;
+        return;
+      }
+      if (d != null) {
+        $scope.select(d, reset_results);
+        return;
       }
       return $scope.select_title(title, reset_results);
     };
@@ -327,7 +335,7 @@
       $scope.song_edited = false;
       el = document.getElementById('pre-song');
       $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "");
-      prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim();
+      prev_song_data = localStorageService.get($scope.selected.version).split("===")[2].trim();
       window.diff = JsDiff.diffChars(prev_song_data, el.innerHTML);
       display = document.getElementById("display");
       display.innerHTML = "";

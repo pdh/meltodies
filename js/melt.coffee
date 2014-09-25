@@ -251,20 +251,23 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     $scope.select item, false
     document.getElementById("search").focus()
 
-  $scope.select_version = (version, title, reset_results=true) ->
-    existing = localStorageService.get version
-    #console.log existing
-    if existing?
-      #console.log "selecting existing"
-      hydrate existing
-      return
-
+  get_data_from_version = (version) ->
     if version? and $scope.songs_json?
       for d in $scope.songs_json
         if d.version == version
-          $scope.select d, reset_results
-          return
+          return d
 
+  $scope.select_version = (version, title, reset_results=true) ->
+    d = get_data_from_version version
+    existing = localStorageService.get version
+    if existing? and d?
+      hydrate existing
+      $scope.selected = d
+      return
+    if d?
+      $scope.select d, reset_results
+      return
+    # fallback to title
     $scope.select_title title, reset_results
 
   $scope.select_title = (title, reset_results=true) ->
@@ -295,7 +298,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     # subtle update bugs .. make sure that we don't have any stray <br>
     $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "")
 
-    prev_song_data = localStorageService.get($scope.selected.file).split("===")[2].trim()
+    prev_song_data = localStorageService.get($scope.selected.version).split("===")[2].trim()
     window.diff = JsDiff.diffChars prev_song_data, el.innerHTML
     display = document.getElementById "display"
     display.innerHTML = ""
