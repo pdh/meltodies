@@ -83,28 +83,34 @@
         return $scope.establish_github(access_token);
       }
     };
-    $scope.select_version = function(version, title) {
+    $scope.select_version = function(version, title, reset_results) {
       var d, _i, _len, _ref;
+      if (reset_results == null) {
+        reset_results = true;
+      }
       if ((version != null) && ($scope.songs_json != null)) {
         _ref = $scope.songs_json;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           d = _ref[_i];
           if (d.version === version) {
-            $scope.select(d);
+            $scope.select(d, reset_results);
             return;
           }
         }
       }
-      return $scope.select_title(title);
+      return $scope.select_title(title, reset_results);
     };
-    $scope.select_title = function(title) {
+    $scope.select_title = function(title, reset_results) {
       var d, _i, _len, _ref;
+      if (reset_results == null) {
+        reset_results = true;
+      }
       if (title !== void 0 && $scope.songs_json !== void 0) {
         _ref = $scope.songs_json;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           d = _ref[_i];
           if (d.title.toLowerCase() === title.toLowerCase()) {
-            $scope.select(d);
+            $scope.select(d, reset_results);
             return;
           }
         }
@@ -115,7 +121,7 @@
       path = $location.path().split('/')[1];
       if (path !== void 0) {
         _ref = path.split('::'), title = _ref[0], version = _ref[1];
-        return $scope.select_version(version, title);
+        return $scope.select_version(version, title, false);
       }
     });
     $scope.update_results = function() {
@@ -195,7 +201,6 @@
         key = "Enter";
       } else {
         $scope.ready_to_select = -1;
-        $scope.query = "";
         $scope.results = [];
         document.getElementById('search-list').scrollTop = 0;
         return;
@@ -222,8 +227,10 @@
         }
       } else if (key === "Enter" && can_select) {
         selected = $scope.results[$scope.ready_to_select];
-        $scope.select(selected);
+        $scope.select(selected, true);
         return $scope.ready_to_select = -1;
+      } else if (key === "Enter" && !can_select) {
+        return $scope.select_random_song();
       } else {
         return $scope.ready_to_select = -1;
       }
@@ -253,11 +260,21 @@
       document.getElementById('song-meta').innerHTML = $scope.song_meta;
       return $scope.song_edited = false;
     };
-    $scope.select = function(datum) {
+    $scope.select = function(datum, reset_results) {
       var local_override, override_key, override_text;
+      if (reset_results == null) {
+        reset_results = true;
+      }
+      if ($scope.selected !== null) {
+        if ($scope.selected.version === datum.version) {
+          return;
+        }
+      }
       transition_search_input();
-      $scope.query = "";
-      $scope.results = [];
+      if (reset_results) {
+        $scope.query = "";
+        $scope.results = [];
+      }
       $scope.selected = datum;
       override_key = "override::" + datum.file;
       local_override = localStorageService.get(override_key);
@@ -286,12 +303,18 @@
       });
     };
     $scope.select_random_song = function() {
-      var item;
+      var item, list;
       if (!started) {
         transition_search_input();
       }
-      item = $scope.songs_json[Math.floor(Math.random() * $scope.songs_json.length)];
-      return $scope.select(item);
+      if ($scope.results.length > 0) {
+        list = $scope.results;
+      } else {
+        list = $scope.songs_json;
+      }
+      item = list[Math.floor(Math.random() * list.length)];
+      $scope.select(item, false);
+      return document.getElementById("search").focus();
     };
     $scope.song_edited = false;
     $scope.edit_song = function() {

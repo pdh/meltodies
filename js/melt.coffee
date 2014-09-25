@@ -90,20 +90,20 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     if access_token?
       $scope.establish_github access_token
 
-  $scope.select_version = (version, title) ->
+  $scope.select_version = (version, title, reset_results=true) ->
     if version? and $scope.songs_json?
       for d in $scope.songs_json
         if d.version == version
-          $scope.select d
+          $scope.select d, reset_results
           return
 
-    $scope.select_title title
+    $scope.select_title title, reset_results
 
-  $scope.select_title = (title) ->
+  $scope.select_title = (title, reset_results=true) ->
     if title isnt undefined and $scope.songs_json isnt undefined
       for d in $scope.songs_json
         if d.title.toLowerCase() == title.toLowerCase()
-          $scope.select d
+          $scope.select d, reset_results
           # just select the first match
           # TODO - versions?
           return
@@ -112,7 +112,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     path = $location.path().split('/')[1]
     if path isnt undefined
       [title, version] = path.split('::')
-      $scope.select_version version, title
+      $scope.select_version version, title, false
 
   $scope.update_results = ->
     if not started
@@ -157,8 +157,10 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     else if $event.keyCode is 13
       key = "Enter"
     else
+      # ESC
       $scope.ready_to_select = -1
-      $scope.query = ""
+      # keep the query though?
+      #$scope.query = ""
       $scope.results = []
       document.getElementById('search-list').scrollTop = 0
       return
@@ -185,8 +187,10 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
         document.getElementById('search-list').scrollTop = 9999999
     else if (key is "Enter" and can_select)
       selected = $scope.results[$scope.ready_to_select]
-      $scope.select selected
+      $scope.select selected, true
       $scope.ready_to_select = -1
+    else if (key is "Enter" and not can_select)
+      $scope.select_random_song()
     else
       $scope.ready_to_select = -1
 
@@ -219,10 +223,15 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     document.getElementById('song-meta').innerHTML = $scope.song_meta
     $scope.song_edited = false
 
-  $scope.select = (datum) ->
+  $scope.select = (datum, reset_results=true) ->
+    if $scope.selected isnt null
+      if $scope.selected.version == datum.version
+        return
+
     transition_search_input()
-    $scope.query = ""
-    $scope.results = []
+    if reset_results
+      $scope.query = ""
+      $scope.results = []
     $scope.selected = datum
 
     override_key = "override::#{datum.file}"
@@ -252,8 +261,16 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
   $scope.select_random_song = () ->
     if not started
       transition_search_input()
-    item = $scope.songs_json[Math.floor(Math.random() * $scope.songs_json.length)]
-    $scope.select item
+    # pick randomly out of search results, if we have some
+    # Do this more elegantly in idiomatic coffee
+    if $scope.results.length > 0
+      list = $scope.results
+    else
+      list = $scope.songs_json
+    item = list[Math.floor(Math.random() * list.length)]
+    # don't reset the search
+    $scope.select item, false
+    document.getElementById("search").focus()
 
   $scope.song_edited = false
   $scope.edit_song = () ->
