@@ -90,30 +90,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     if access_token?
       $scope.establish_github access_token
 
-  $scope.select_version = (version, title, reset_results=true) ->
-    if version? and $scope.songs_json?
-      for d in $scope.songs_json
-        if d.version == version
-          $scope.select d, reset_results
-          return
-
-    $scope.select_title title, reset_results
-
-  $scope.select_title = (title, reset_results=true) ->
-    if title isnt undefined and $scope.songs_json isnt undefined
-      for d in $scope.songs_json
-        if d.title.toLowerCase() == title.toLowerCase()
-          $scope.select d, reset_results
-          # just select the first match
-          # TODO - versions?
-          return
-
-  $scope.$on '$locationChangeSuccess', (scope, next, current) ->
-    path = $location.path().split('/')[1]
-    if path isnt undefined
-      [title, version] = path.split('::')
-      $scope.select_version version, title, false
-
   $scope.update_results = ->
     if not started
       transition_search_input()
@@ -200,6 +176,8 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     $scope.ready_to_select = -1
 
   hydrate = (song_text) ->
+    #console.log song_text
+    # Takes the entire file as a string.
     # we assume that the song is in the correct format
     $scope.song_meta = song_text.split('===')[1].trim()
     $scope.song_data = song_text.split('===')[2].trim()
@@ -234,6 +212,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       $scope.results = []
     $scope.selected = datum
 
+    # gets set in the PR
     override_key = "override::#{datum.file}"
     local_override = localStorageService.get override_key
     if local_override?
@@ -251,7 +230,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
           localStorageService.remove override_key
         return
       hydrate song_text
-      localStorageService.set datum.file, song_text
+      localStorageService.set datum.version, song_text
     ).error(()->
       song_text = localStorageService.get datum.file
       if song_text?
@@ -271,6 +250,42 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     # don't reset the search
     $scope.select item, false
     document.getElementById("search").focus()
+
+  $scope.select_version = (version, title, reset_results=true) ->
+    existing = localStorageService.get version
+    #console.log existing
+    if existing?
+      #console.log "selecting existing"
+      hydrate existing
+      return
+
+    if version? and $scope.songs_json?
+      for d in $scope.songs_json
+        if d.version == version
+          $scope.select d, reset_results
+          return
+
+    $scope.select_title title, reset_results
+
+  $scope.select_title = (title, reset_results=true) ->
+    if title isnt undefined and $scope.songs_json isnt undefined
+      for d in $scope.songs_json
+        if d.title.toLowerCase() == title.toLowerCase()
+          $scope.select d, reset_results
+          # just select the first match
+          # TODO - versions?
+          return
+
+  $scope.$on '$locationChangeSuccess', (scope, next, current) ->
+    path = $location.path().split('/')[1]
+    if path isnt undefined
+      [title, version] = path.split('::')
+      $scope.select_version version, title, false
+
+
+
+
+
 
   $scope.song_edited = false
   $scope.edit_song = () ->
