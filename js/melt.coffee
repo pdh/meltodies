@@ -33,7 +33,7 @@ youtube_iframe_template = (src) ->
   """
 <iframe id="ytplayer" type="text/html" width="213" height="130"
     allowfullscreen="true"
-    src="#{src}"
+    src="#{src}?vq=small&hd=0"
     frameborder="0"></iframe>
   """
 

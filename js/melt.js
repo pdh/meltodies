@@ -24,7 +24,7 @@
   };
 
   youtube_iframe_template = function(src) {
-    return "<iframe id=\"ytplayer\" type=\"text/html\" width=\"213\" height=\"130\"\n    allowfullscreen=\"true\"\n    src=\"" + src + "\"\n    frameborder=\"0\"></iframe>";
+    return "<iframe id=\"ytplayer\" type=\"text/html\" width=\"213\" height=\"130\"\n    allowfullscreen=\"true\"\n    src=\"" + src + "?vq=small&hd=0\"\n    frameborder=\"0\"></iframe>";
   };
 
   started = false;
