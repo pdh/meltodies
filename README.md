@@ -8,6 +8,8 @@ Get On Up
 
 install bower and run `bower install`
 
+run `./update_songs.py`
+
 Run a dev server:
 
     python -m SimpleHTTPServer 8090  # if Python2X
@@ -18,8 +20,6 @@ go to http://localhost:8090/ and find the songs
 
 Contributing
 ------------
-
-Add songs and then add the name/file to `songs.json`.
 
 To work with the clientside code,
 install [CoffeeScript](http://coffeescript.org/)
