@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
 from apiclient.discovery import build
-from apiclient.errors import HttpError
-from oauth2client.tools import argparser
 
 from retrying import retry
 
@@ -12,6 +10,7 @@ from retrying import retry
 #   https://cloud.google.com/console
 # Please ensure that you have enabled the YouTube Data API for your project.
 DEVELOPER_KEY = "AIzaSyAt9oNWxCBs5OiCG4xHdexAdsyh1lP_AYc"
+DEVELOPER_KEY = "AIzaSyD36GSm_qVvifw8hbf87yhboBZWVESsx_s"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
