@@ -1,0 +1,36 @@
+{
+  "name": "clientstate-redis-js",
+  "authors": [
+    "Skylar Saveland <skylar.saveland@gmail.com>"
+  ],
+  "description": "Talk to redis without a server?",
+  "main": "dist/clientstate.redis.min.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "redis",
+    "hotness"
+  ],
+  "license": "Apache2",
+  "homepage": "http://clientstate.io",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "oauth-js": "~0.2.4"
+  },
+  "_release": "eeece5189d",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "eeece5189d70f38b06c17dea7ba3cc925b251891"
+  },
+  "_source": "git://github.com/ClientState/clientstate-redis-js.git",
+  "_target": "*",
+  "_originalSource": "clientstate-redis-js"
+}
