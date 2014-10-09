@@ -504,5 +504,5 @@ AddSongModalCtrl = ($scope, $modalInstance, title) ->
     $modalInstance.dismiss('cancel')
 
 
-MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService']
+MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService', '$analytics']
 angular.module('MeltApp').controller 'MeltController', MeltController
