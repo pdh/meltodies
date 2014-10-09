@@ -509,7 +509,7 @@
     };
   };
 
-  MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService'];
+  MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService', '$analytics'];
 
   angular.module('MeltApp').controller('MeltController', MeltController);
 
