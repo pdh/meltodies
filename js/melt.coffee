@@ -2,6 +2,7 @@
 
 window.MeltApp = angular.module 'MeltApp', [
   'ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable',
+  'angulartics', 'angulartics.google.analytics'
 ]
 
 
