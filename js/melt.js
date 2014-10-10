@@ -3,7 +3,7 @@
   'use strict';
   var AddSongModalCtrl, MeltController, song_template, started, transition_search_input, youtube_iframe_template, _setColumnWidth;
 
-  window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable']);
+  window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable', 'angulartics', 'angulartics.google.analytics']);
 
   _setColumnWidth = function(column_width) {
     var el, els, w, _i, _len, _results;
@@ -42,10 +42,11 @@
     return started = true;
   };
 
-  MeltController = function($scope, $http, $modal, $location, localStorageService) {
+  MeltController = function($scope, $http, $modal, $location, localStorageService, $analytics) {
     var get_data_from_version, hydrate;
     window.lss = localStorageService;
     window.l = $location;
+    window.analytics = $analytics;
     if ($location.path()) {
       transition_search_input(0);
     }
@@ -213,6 +214,7 @@
       if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
         $location.path("" + metal.title + "::" + metal.version);
       }
+      $analytics.pageTrack($location.path());
       _setColumnWidth(Math.round(_.max($scope.song_data.split("\n"), function(i) {
         return i.length;
       }).length * 0.618 * (window.devicePixelRatio || 1)));
@@ -507,7 +509,7 @@
     };
   };
 
-  MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService'];
+  MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService', '$analytics'];
 
   angular.module('MeltApp').controller('MeltController', MeltController);
 

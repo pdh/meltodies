@@ -2,6 +2,7 @@
 
 window.MeltApp = angular.module 'MeltApp', [
   'ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable',
+  'angulartics', 'angulartics.google.analytics'
 ]
 
 
@@ -50,9 +51,10 @@ transition_search_input = (duration=100) ->
   started = true
 
 
-MeltController = ($scope, $http, $modal, $location, localStorageService) ->
+MeltController = ($scope, $http, $modal, $location, localStorageService, $analytics) ->
   window.lss = localStorageService
   window.l = $location
+  window.analytics = $analytics
   if $location.path()
     transition_search_input 0
   window.scope = $scope
@@ -192,6 +194,9 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       )
     if metal.title.toLowerCase() isnt $location.path().toLowerCase()
       $location.path "#{metal.title}::#{metal.version}"
+
+    # point
+    $analytics.pageTrack $location.path()
     _setColumnWidth Math.round(
       _.max(
         $scope.song_data.split("\n"),
@@ -499,5 +504,5 @@ AddSongModalCtrl = ($scope, $modalInstance, title) ->
     $modalInstance.dismiss('cancel')
 
 
-MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService']
+MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService', '$analytics']
 angular.module('MeltApp').controller 'MeltController', MeltController
