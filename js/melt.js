@@ -214,12 +214,12 @@
       if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
         $location.path("" + metal.title + "::" + metal.version);
       }
-      $analytics.pageTrack($location.path());
       _setColumnWidth(Math.round(_.max($scope.song_data.split("\n"), function(i) {
         return i.length;
       }).length * 0.618 * (window.devicePixelRatio || 1)));
       document.getElementById('song-meta').innerHTML = $scope.song_meta;
-      return $scope.song_edited = false;
+      $scope.song_edited = false;
+      return $analytics.pageTrack($location.path());
     };
     $scope.select = function(datum, reset_results) {
       var local_override, override_key, override_text;
@@ -257,7 +257,7 @@
         return localStorageService.set(datum.version, song_text);
       }).error(function() {
         var song_text;
-        song_text = localStorageService.get(datum.file);
+        song_text = localStorageService.get(datum.version);
         if (song_text != null) {
           return hydrate(song_text);
         }

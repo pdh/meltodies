@@ -195,8 +195,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
     if metal.title.toLowerCase() isnt $location.path().toLowerCase()
       $location.path "#{metal.title}::#{metal.version}"
 
-    # point
-    $analytics.pageTrack $location.path()
     _setColumnWidth Math.round(
       _.max(
         $scope.song_data.split("\n"),
@@ -205,6 +203,9 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
     )
     document.getElementById('song-meta').innerHTML = $scope.song_meta
     $scope.song_edited = false
+
+    # point - last so failure doesn't block anything
+    $analytics.pageTrack $location.path()
 
   $scope.select = (datum, reset_results=true) ->
     if $scope.selected isnt null
@@ -237,7 +238,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
       hydrate song_text
       localStorageService.set datum.version, song_text
     ).error(()->
-      song_text = localStorageService.get datum.file
+      song_text = localStorageService.get datum.version
       if song_text?
         hydrate song_text
     )

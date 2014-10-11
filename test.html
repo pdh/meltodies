@@ -1,0 +1,14 @@
+<html>
+  <head>
+    <script src="lib/clientstate-redis-js/dist/clientstate.redis.js"></script>
+    <script>
+window.db = new ClientStateRedis("http://localhost:3000", "b6d50cdc7d9372561081");
+console.log(db);
+// db.github_auth_redirect() ----> ?access_token ...
+    </script>
+    <link rel="shortcut icon" href="favicon.ico?v=10990asdlfkj">
+  </head>
+  <body>
+Try `db.auth_popup()` in the console.
+  </body>
+</html>
