@@ -3,7 +3,7 @@
   'use strict';
   var AddSongModalCtrl, MeltController, song_template, started, transition_search_input, youtube_iframe_template, _setColumnWidth;
 
-  window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable']);
+  window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable', 'angulartics', 'angulartics.google.analytics']);
 
   _setColumnWidth = function(column_width) {
     var el, els, w, _i, _len, _results;
@@ -42,10 +42,11 @@
     return started = true;
   };
 
-  MeltController = function($scope, $http, $modal, $location, localStorageService) {
+  MeltController = function($scope, $http, $modal, $location, localStorageService, $analytics) {
     var get_data_from_version, hydrate;
     window.lss = localStorageService;
     window.l = $location;
+    window.analytics = $analytics;
     if ($location.path()) {
       transition_search_input(0);
     }
@@ -217,7 +218,8 @@
         return i.length;
       }).length * 0.618 * (window.devicePixelRatio || 1)));
       document.getElementById('song-meta').innerHTML = $scope.song_meta;
-      return $scope.song_edited = false;
+      $scope.song_edited = false;
+      return $analytics.pageTrack($location.path());
     };
     $scope.select = function(datum, reset_results) {
       var local_override, override_key, override_text;
@@ -255,7 +257,7 @@
         return localStorageService.set(datum.version, song_text);
       }).error(function() {
         var song_text;
-        song_text = localStorageService.get(datum.file);
+        song_text = localStorageService.get(datum.version);
         if (song_text != null) {
           return hydrate(song_text);
         }
@@ -507,7 +509,7 @@
     };
   };
 
-  MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService'];
+  MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService', '$analytics'];
 
   angular.module('MeltApp').controller('MeltController', MeltController);
 

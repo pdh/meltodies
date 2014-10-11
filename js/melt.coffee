@@ -2,6 +2,7 @@
 
 window.MeltApp = angular.module 'MeltApp', [
   'ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable',
+  'angulartics', 'angulartics.google.analytics'
 ]
 
 
@@ -50,9 +51,10 @@ transition_search_input = (duration=100) ->
   started = true
 
 
-MeltController = ($scope, $http, $modal, $location, localStorageService) ->
+MeltController = ($scope, $http, $modal, $location, localStorageService, $analytics) ->
   window.lss = localStorageService
   window.l = $location
+  window.analytics = $analytics
   if $location.path()
     transition_search_input 0
   window.scope = $scope
@@ -192,6 +194,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       )
     if metal.title.toLowerCase() isnt $location.path().toLowerCase()
       $location.path "#{metal.title}::#{metal.version}"
+
     _setColumnWidth Math.round(
       _.max(
         $scope.song_data.split("\n"),
@@ -200,6 +203,9 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
     )
     document.getElementById('song-meta').innerHTML = $scope.song_meta
     $scope.song_edited = false
+
+    # point - last so failure doesn't block anything
+    $analytics.pageTrack $location.path()
 
   $scope.select = (datum, reset_results=true) ->
     if $scope.selected isnt null
@@ -232,7 +238,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService) ->
       hydrate song_text
       localStorageService.set datum.version, song_text
     ).error(()->
-      song_text = localStorageService.get datum.file
+      song_text = localStorageService.get datum.version
       if song_text?
         hydrate song_text
     )
@@ -499,5 +505,5 @@ AddSongModalCtrl = ($scope, $modalInstance, title) ->
     $modalInstance.dismiss('cancel')
 
 
-MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService']
+MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService', '$analytics']
 angular.module('MeltApp').controller 'MeltController', MeltController

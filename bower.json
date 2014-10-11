@@ -29,6 +29,7 @@
     "angular-local-storage": "~0.0.7",
     "angular-contenteditable": "~0.3.7",
     "jsdiff": "~1.0.8",
-    "cryptojslib": "~3.1.2"
+    "cryptojslib": "~3.1.2",
+    "angulartics": "~0.17.0"
   }
 }
