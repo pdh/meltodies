@@ -21,7 +21,7 @@ pre {
 }
 #search-list {
   max-height: 260px;
-  overflow: scroll;
+  overflow: auto;
 }
 #search-list li {
   font-size: 130%;
