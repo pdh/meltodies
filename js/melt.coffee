@@ -384,7 +384,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
   $scope.start_add = () ->
     query = $scope.query
     modalInstance = $modal.open
-      templateUrl: 'addSongModal.html'
+      templateUrl: 'modals/addSongModal.html'
       controller: AddSongModalCtrl
       size: 'lg',
       resolve:
@@ -482,6 +482,62 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
       # whether we can write or not, we remove and PR .. hrm ..
       branch.writeMany(changes, "Edit #{context.title}").then _remove_and_pr, _remove_and_pr
     master.createBranch(branchname).then _onBranch, _onBranch
+
+
+  # add song
+  $scope.confirm_delete = () ->
+    modalInstance = $modal.open
+      templateUrl: 'modals/deleteSongModal.html'
+      controller: DeleteSongModalCtrl
+      size: 'sm',
+      resolve:
+        selected: () ->
+           $scope.selected
+
+    confirm = (data) ->
+      console.log "COMPLETE!"
+      title = $scope.selected.title.toLowerCase().replace /\ /g, '_'
+      branchname = "remove_#{title}_#{$scope.selected.version}"
+      user_repo = $scope.github.getRepo $scope.userInfo.login, "meltodies"
+      master = user_repo.getBranch('master')
+
+      err = (err) ->
+        console.log "ERR!", err
+
+      afterPull = () ->
+        console.log "AFTERPULL!"
+
+      removeSuccess = () ->
+        console.log "removeSuccess!"
+        pr = $scope.upstream_repo.createPullRequest
+          "title": "Remove #{$scope.selected.file}"
+          "head": "#{$scope.userInfo.login}:#{branchname}"
+          "base": "master"
+        pr.then afterPull, err
+
+      createSuccess = () ->
+        console.log "createSuccess!"
+        branch = user_repo.getBranch(branchname)
+        console.log "remove from #{branch}", $scope.selected.file
+        branch.remove($scope.selected.file, "Removing #{$scope.selected.file}").then removeSuccess, err
+
+      # let's just assume that the err would be that we already have a branch.
+      master.createBranch(branchname).then createSuccess, createSuccess
+
+    dimiss = () ->
+      console.log "DISMISS!"
+
+    modalInstance.result.then confirm, dimiss
+
+
+DeleteSongModalCtrl = ($scope, $modalInstance, selected) ->
+  $scope.data =
+    selected: selected
+  $scope.ok = () ->
+    $modalInstance.close($scope.data)
+  $scope.cancel = () ->
+    $modalInstance.dismiss('cancel')
+
 
 
 AddSongModalCtrl = ($scope, $modalInstance, title) ->
