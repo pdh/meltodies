@@ -6,17 +6,15 @@
   window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable', 'angulartics', 'angulartics.google.analytics']);
 
   _setColumnWidth = function(column_width) {
-    var el, els, w, _i, _len, _results;
+    var el, els, w, _i, _len;
     els = document.querySelectorAll(".song");
     w = column_width + "em";
-    _results = [];
     for (_i = 0, _len = els.length; _i < _len; _i++) {
       el = els[_i];
       el.style["-webkit-column-width"] = w;
-      el.style["-moz-column-width"] = w;
-      _results.push(el.style["column-width"] = w);
+      el.style.MozColumnWidth = w;
+      el.style["column-width"] = w;
     }
-    return _results;
   };
 
   song_template = function(scp) {

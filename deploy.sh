@@ -13,6 +13,8 @@ git add .
 git commit -m "update gh-pages"
 git push
 git checkout master
+# angulartics gets blown away, for some reason
+# @pdh wth?
+rm -rf lib/angulartics/
 bower install
 ./update_songs.py
-

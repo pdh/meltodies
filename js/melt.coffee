@@ -11,8 +11,9 @@ _setColumnWidth = (column_width) ->
   w = column_width + "em"
   for el in els
     el.style["-webkit-column-width"] = w
-    el.style["-moz-column-width"] = w
+    el.style.MozColumnWidth = w
     el.style["column-width"] = w
+  return
 
 
 song_template = (scp) ->
