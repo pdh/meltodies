@@ -9,8 +9,8 @@ from retrying import retry
 # tab of
 #   https://cloud.google.com/console
 # Please ensure that you have enabled the YouTube Data API for your project.
-DEVELOPER_KEY = "AIzaSyAt9oNWxCBs5OiCG4xHdexAdsyh1lP_AYc"
-DEVELOPER_KEY = "AIzaSyD36GSm_qVvifw8hbf87yhboBZWVESsx_s"
+# why do the keys keep becoming invalidated? F.
+DEVELOPER_KEY = "AIzaSyAvDMM2U-BgElKvejfqj3ziQkd_c9xLIxE"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
