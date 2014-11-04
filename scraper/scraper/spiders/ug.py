@@ -36,7 +36,7 @@ class UgSpider(scrapy.Spider):
         # Dylan has 14 pages. Does anyone have more on UG?
         self.start_urls = [
             'http://www.ultimate-guitar.com/tabs/%s_tabs%s.htm?no_takeover' % (artist, page)
-            for page in range(1, 20)
+            for page in [""] + range(1, 20)
         ]
 
     def parse(self, response):
