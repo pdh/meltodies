@@ -380,6 +380,9 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
     localStorageService.set 'github_access_token', github_data.access_token
     $scope.establish_github github_data.access_token
     $scope.$apply()
+  $scope.logout = () ->
+    localStorageService.remove 'github_access_token'
+    $scope.github = null
 
   # add song
   $scope.start_add = () ->

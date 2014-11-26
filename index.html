@@ -77,9 +77,10 @@
         <button ng-show="!github" ng-click="login()" class="btn btn-primary btn-random">
           <img src="img/octocat.png" title="Connect with Github" />
         </button>
+        <button ng-show="github" ng-click="logout()" class="btn btn-primary btn-random">
+          <img src="img/141-logout.png" title="Logout" />
+        </button>
       </div>
-
-
     </div><!-- row #start -->
     <div class="row song-meta-container" ng-show="song_meta">
       <pre class="col-xs-6 col-lg-4" id="song-meta"></pre>
