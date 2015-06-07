@@ -1,0 +1,69 @@
+===
+title: Saint Of Circumstance
+version: fe9c5d1a5d2866db59aad2e7d3f7a8db
+author: grateful dead
+performed_by: grateful dead
+tube_id: 
+===
+NOTES:
+1) Intro Chord is a type of poly chord: Cmaj/Bb5. and played on guitar as shown below 
+(number represent fingering)
+
+X  |   |  0   |   0 (open strings)
+|  1   |  |   2   |
+|  |   |  |   |   |
+|  |   4  |   |   |
+
+
+2) "./." in a bar means repeat from the previous bar
+
+
+Saint of Circumstance
+
+POLYCHORD
+|| Cmaj/Bb5   | ./.     :||x3                           to VAMP
+
+VAMP
+||: A    G | D     E     :||x4                     to VERSES
+
+VERSES 1,2 (1/2 time feel)
+|| A      | A7/C#     | Bm       | BbM7      |
+|  A      | A7/C#     | Bm  Bb6 | E7   BbM7  |
+|  A      | A7/G      ||: F#m    | G        :||x3 
+
+(verse 1 end - VAMP)
+||: A   G | D     E     :||x4                        to VERSE 2
+
+(verse 2 end - POLYCHORD)
+|| Cmaj/Bb5   | ./.     :||x2            to BRIDGE  ('Holes in what's left...')
+
+
+Bridge (normal time)
+||:E       D | A    B     :||x3
+|| B         | B           ||   
+||:E       D | A    B     :||x2
+|| E       D | A    B      | D        ||                  to POLYCHORD BRIDGE
+
+
+POLYCHORD BRIDGE
+||:Cmaj/Bb5   | ./.        | ./.       | ./.     | 
+|  A    A/G   | F#m   G   :|| x2                        to VAMP
+
+VAMP (normal time)
+||: A   G | D     E     :|| x4                          to VERSE 3
+
+VERSE 3
+|| A      | A7/C#     | Bm       | BbM7       |
+|  A      | A7/C#     | Bm  Bb13 | E7   BbM7  |
+|  A      | A7/G      ||: F#m    | G         :||x3  
+
+(verse 3 end - POLYCHORD, hold chord and build into Outro Vamp)
+|| Cmaj/Bb5   | ./.     :||x...?
+
+OUTROVAMP (play into final vocal 'Sure don't know...')
+||: A   G | D     E     :||x...?
+       out with 'maybe goin on a feeling'
+POLYCHORD
+|| Cmaj/Bb5   | ./.     :| x2 (or 3 or whatever)
+OUTRO
+|| A      | A7/G      | F#m    | G       | A       |||
