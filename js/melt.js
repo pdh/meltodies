@@ -398,6 +398,10 @@
       $scope.establish_github(github_data.access_token);
       return $scope.$apply();
     };
+    $scope.logout = function() {
+      localStorageService.remove('github_access_token');
+      return $scope.github = null;
+    };
     $scope.start_add = function() {
       var complete, dimissed, modalInstance, query;
       query = $scope.query;
