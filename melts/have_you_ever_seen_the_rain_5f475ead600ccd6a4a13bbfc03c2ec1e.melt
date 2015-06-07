@@ -1,22 +1,10 @@
 ===
 title: Have You Ever Seen The Rain
-version: 51c877913683a0b00d7d8e72b1ce5c21
+version: 5f475ead600ccd6a4a13bbfc03c2ec1e
 author: Creedence Clearwater Revival
 performed_by: Creedence Clearwater Revival
 tube_id: Gu2pVPWGYMQ
 ===
-C.C.R. - Have You Ever Seen The Rain
-
-Standard Tuning: 4/4 Time: Key of C:
-
-Chords:
-String No.:    654321
-C:             X32010
-C(Cadd9/G):    3X0010
-F(Fmaj7/A):    X03210
-Am(Am7):       X02010
-C/B:           X20010
-
 Intro:  Am  F  C  G  C
 
 Verse 1:
@@ -36,11 +24,11 @@ C
 Chorus:
 F        G
  I wanna know
-           C     C/B    Am    G
+           C     C/B    Am
  Have you ever seen the rain
 F        G  
  I wanna know
-           C     C/B    Am    G
+           C     C/B    Am
  Have you ever seen the rain
 F        G              C 
  Coming down on a sunny day
@@ -60,4 +48,3 @@ C
  And it can't stop, I wonder
 
 End Chorus  X  2
-
