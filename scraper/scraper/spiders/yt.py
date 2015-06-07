@@ -13,7 +13,7 @@ from retrying import retry
 #DEVELOPER_KEY = "AIzaSyAvDMM2U-BgElKvejfqj3ziQkd_c9xLIxE"
 # google, I'm not happy about this key replacement problem.
 # like I even care.
-DEVELOPER_KEY = "AIzaSyDfv-JJQG_9NeM1BCCYH_BWB-p0JUrALH8"
+DEVELOPER_KEY = "AIzaSyBUmtR1hNQGJugFt-Rx8ZDutOR2PUBNpO8"
 YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
