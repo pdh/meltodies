@@ -63,6 +63,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
   $scope.ready_to_select = -1
   $scope.timeout = null
   $scope.selected = null
+  $scope.currentPlaylist = localStorageService.get 'current_playlist'
 
   $http(
     method: "GET"
@@ -101,13 +102,10 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
     $scope.ready_to_select = -1
 
     words = $scope.query.split(' ')
-    #console.log "start", words
     authstr = "author:"
     filtered_words = (w for w in words when (not (w.substring(0, authstr.length) is authstr)))
     authorstrs = (w for w in words when (w.substring(0, authstr.length) is authstr))
     a_search = (a.split(":")[1] for a in authorstrs)
-    #console.log "filtered", filtered_words
-    #console.log "authors", a_search
     window.filterf = (datum) ->
       for word in filtered_words
         if datum.title.toLowerCase().indexOf(word.toLowerCase()) < 0
@@ -257,6 +255,19 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
     # don't reset the search
     $scope.select item, false
     document.getElementById("search").focus()
+
+
+  $scope.show_playlists = () ->
+    _playlists = localStorageService.get 'playlists'
+
+    modalInstance = $modal.open
+      templateUrl: 'modals/playlistModal.html'
+      controller: PlaylistModalCtrl
+      size: 'sm',
+      resolve:
+          playlists: () ->
+              _playlists
+
 
   get_data_from_version = (version) ->
     if version? and $scope.songs_json?
@@ -533,6 +544,13 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
 
     modalInstance.result.then confirm, dimiss
 
+  $scope.add_to_playlist = () ->
+      playlistName = localStorageService.get 'current_playlist'
+      playlists = localStorageService.get 'playlists'
+      playlist = playlists[playlistName]
+      playlist.push $scope.selected
+      localStorageService.set 'playlists', playlists
+
 
 DeleteSongModalCtrl = ($scope, $modalInstance, selected) ->
   $scope.data =
@@ -563,6 +581,32 @@ AddSongModalCtrl = ($scope, $modalInstance, title) ->
 
   $scope.cancel = () ->
     $modalInstance.dismiss('cancel')
+
+
+PlaylistModalCtrl = ($scope, $modalInstance, playlists) ->
+    localStorage = window.lss
+    $scope.playlists = playlists or {}
+    $scope.currentPlaylist = localStorage.get 'current_playlist'
+    $scope.data =
+        playlist_name: null
+
+    updatePlaylist = (playlist) ->
+        window.currentPlaylist = playlist
+        $scope.currentPlaylist = playlist
+        localStorage.set 'current_playlist', playlist
+
+    $scope.create = () ->
+        $scope.playlists[$scope.data.playlist_name] = []
+        localStorage.set 'playlists', $scope.playlists
+        updatePlaylist($scope.data.playlist_name)
+        $scope.data.playlist_name = ''
+
+    $scope.selectPlaylist= (playlistName) ->
+        updatePlaylist(playlistName)
+
+    $scope.ok = () ->
+        $modalInstance.close()
+
 
 
 MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService', '$analytics']
