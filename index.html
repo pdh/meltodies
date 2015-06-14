@@ -98,10 +98,16 @@
       </div>
       <div class="col-xs-6 col-lg-4" id="playlist-controls" ng-show="currentPlaylist">
         <button ng-click="add_to_playlist()" class="btn">
-            Playlist++
+            Add
         </button>
         <button ng-click="remove_from_playlist()" class="btn">
-            Playlist--
+            Remove
+        </button>
+        <button ng-click="playlist_next()" class="btn">
+            Next
+        </button>
+        <button ng-click="playlist_prev()" class="btn">
+            Previous
         </button>
       </div>
     </div>

@@ -103,8 +103,12 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
 
     words = $scope.query.split(' ')
     authstr = "author:"
-    filtered_words = (w for w in words when (not (w.substring(0, authstr.length) is authstr)))
-    authorstrs = (w for w in words when (w.substring(0, authstr.length) is authstr))
+    filtered_words = (
+      w for w in words when (not (w.substring(0, authstr.length) is authstr))
+    )
+    authorstrs = (
+      w for w in words when (w.substring(0, authstr.length) is authstr)
+    )
     a_search = (a.split(":")[1] for a in authorstrs)
     window.filterf = (datum) ->
       for word in filtered_words
@@ -256,7 +260,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
     $scope.select item, false
     document.getElementById("search").focus()
 
-
   $scope.show_playlists = () ->
     _playlists = localStorageService.get 'playlists'
 
@@ -268,6 +271,15 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
           playlists: () ->
               _playlists
 
+    complete = (data) ->
+        console.log "complete!", data
+        $scope.currentPlaylist = localStorageService.get 'current_playlist'
+
+    dismiss = () ->
+        console.log "dismiss!"
+        $scope.currentPlaylist = localStorageService.get 'current_playlist'
+
+    modalInstance.result.then complete, dismiss
 
   get_data_from_version = (version) ->
     if version? and $scope.songs_json?
@@ -303,20 +315,17 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
       [title, version] = path.split('::')
       $scope.select_version version, title, false
 
-
-
-
-
-
   $scope.song_edited = false
   $scope.edit_song = () ->
-
     $scope.song_edited = false
     el = document.getElementById('pre-song')
     # subtle update bugs .. make sure that we don't have any stray <br>
     $scope.song_data = $scope.song_data.replace(/<\/?[^>]+(>|$)/g, "")
 
-    prev_song_data = localStorageService.get($scope.selected.version).split("===")[2].trim()
+    prev_song_data = localStorageService.get(
+      $scope.selected.version
+    ).split("===")[2].trim()
+
     window.diff = JsDiff.diffChars prev_song_data, el.innerHTML
     display = document.getElementById "display"
     display.innerHTML = ""
@@ -334,6 +343,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
       span.style["background-color"] = color
       span.appendChild document.createTextNode part.value
       display.appendChild span
+
   $scope.keypress_song = (ev) ->
     # only on enter
     # http://stackoverflow.com/q/23974533/177293
@@ -351,9 +361,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
     ev.preventDefault()
     ev.returnValue = false
 
-
-
-  # Github
+  # Github ----------------------------------------------------------------
 
   $scope.establish_github = (access_token) ->
     $scope.github_access_token = access_token
@@ -381,7 +389,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
     # > lss.set("github_access_token")
     # the repos need to be synced b/c, when we edit, we delete
     # the older version (rename the file)
-
 
   OAuth.initialize 'suDFbLhBbbZAzBRH-CFx5WBoQLU'
   $scope.login = () ->
@@ -498,7 +505,6 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
       branch.writeMany(changes, "Edit #{context.title}").then _remove_and_pr, _remove_and_pr
     master.createBranch(branchname).then _onBranch, _onBranch
 
-
   # add song
   $scope.confirm_delete = () ->
     modalInstance = $modal.open
@@ -534,7 +540,9 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
         console.log "createSuccess!"
         branch = user_repo.getBranch(branchname)
         console.log "remove from #{branch}", $scope.selected.file
-        branch.remove($scope.selected.file, "Removing #{$scope.selected.file}").then removeSuccess, err
+        branch.remove(
+          $scope.selected.file, "Removing #{$scope.selected.file}"
+        ).then removeSuccess, err
 
       # let's just assume that the err would be that we already have a branch.
       master.createBranch(branchname).then createSuccess, createSuccess
@@ -544,12 +552,52 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
 
     modalInstance.result.then confirm, dimiss
 
+
+  # - - - - - P l a y l i s t - - - - - - - - - - - - - - - - - - - - - - -
+
+  _current_playlist = () ->
+    playlistName = localStorageService.get 'current_playlist'
+    playlists = localStorageService.get 'playlists'
+    [playlistName, playlists[playlistName]]
+
+  _save_playlist = (playlistName, playlist) ->
+    playlists = localStorageService.get 'playlists'
+    playlists[playlistName] = playlist
+    localStorageService.set 'playlists', playlists
+
   $scope.add_to_playlist = () ->
-      playlistName = localStorageService.get 'current_playlist'
-      playlists = localStorageService.get 'playlists'
-      playlist = playlists[playlistName]
-      playlist.push $scope.selected
-      localStorageService.set 'playlists', playlists
+    [playlistName, playlist] = _current_playlist()
+    playlist.push $scope.selected
+    _save_playlist(playlistName, playlist)
+
+  $scope.remove_from_playlist = () ->
+    [playlistName, playlist] = _current_playlist()
+    filtered_playlist = (
+      song for song in playlist when song.version != $scope.selected.version
+    )
+    _save_playlist(playlistName, filtered_playlist)
+
+  $scope.playlist_next = () ->
+    [playlistName, playlist] = _current_playlist()
+    current_index = localStorageService.get 'playlist_index'
+    next_index = Number(current_index) + 1
+    if next_index > playlist.length
+        next_index = 0
+    localStorageService.set 'playlist_index', next_index
+    next_song = playlist[next_index]
+    $scope.select next_song, false
+    document.getElementById("search").focus()
+
+  $scope.playlist_prev= () ->
+    [playlistName, playlist] = _current_playlist()
+    current_index = localStorageService.get 'playlist_index'
+    prev_index = Number(current_index) - 1
+    if prev_index < 0
+      prev_index = playlist.length - 1
+    localStorageService.set 'playlist_index', prev_index
+    next_song = playlist[prev_index]
+    $scope.select next_song, false
+    document.getElementById("search").focus()
 
 
 DeleteSongModalCtrl = ($scope, $modalInstance, selected) ->
@@ -559,7 +607,6 @@ DeleteSongModalCtrl = ($scope, $modalInstance, selected) ->
     $modalInstance.close($scope.data)
   $scope.cancel = () ->
     $modalInstance.dismiss('cancel')
-
 
 
 AddSongModalCtrl = ($scope, $modalInstance, title) ->
@@ -591,9 +638,9 @@ PlaylistModalCtrl = ($scope, $modalInstance, playlists) ->
         playlist_name: null
 
     updatePlaylist = (playlist) ->
-        window.currentPlaylist = playlist
         $scope.currentPlaylist = playlist
         localStorage.set 'current_playlist', playlist
+        localStorage.set 'playlist_index', 0
 
     $scope.create = () ->
         $scope.playlists[$scope.data.playlist_name] = []
@@ -609,5 +656,7 @@ PlaylistModalCtrl = ($scope, $modalInstance, playlists) ->
 
 
 
-MeltController.$inject = ['$scope', '$http', '$modal', '$location', 'localStorageService', '$analytics']
+MeltController.$inject = [
+  '$scope', '$http', '$modal', '$location', 'localStorageService', '$analytics'
+]
 angular.module('MeltApp').controller 'MeltController', MeltController

@@ -41,7 +41,7 @@
   };
 
   MeltController = function($scope, $http, $modal, $location, localStorageService, $analytics) {
-    var get_data_from_version, hydrate;
+    var _current_playlist, _save_playlist, get_data_from_version, hydrate;
     window.lss = localStorageService;
     window.l = $location;
     window.analytics = $analytics;
@@ -277,9 +277,9 @@
       return document.getElementById("search").focus();
     };
     $scope.show_playlists = function() {
-      var _playlists, modalInstance;
+      var _playlists, complete, dismiss, modalInstance;
       _playlists = localStorageService.get('playlists');
-      return modalInstance = $modal.open({
+      modalInstance = $modal.open({
         templateUrl: 'modals/playlistModal.html',
         controller: PlaylistModalCtrl,
         size: 'sm',
@@ -289,6 +289,15 @@
           }
         }
       });
+      complete = function(data) {
+        console.log("complete!", data);
+        return $scope.currentPlaylist = localStorageService.get('current_playlist');
+      };
+      dismiss = function() {
+        console.log("dismiss!");
+        return $scope.currentPlaylist = localStorageService.get('current_playlist');
+      };
+      return modalInstance.result.then(complete, dismiss);
     };
     get_data_from_version = function(version) {
       var d, j, len, ref;
@@ -556,13 +565,65 @@
       };
       return modalInstance.result.then(confirm, dimiss);
     };
-    return $scope.add_to_playlist = function() {
-      var playlist, playlistName, playlists;
+    _current_playlist = function() {
+      var playlistName, playlists;
       playlistName = localStorageService.get('current_playlist');
       playlists = localStorageService.get('playlists');
-      playlist = playlists[playlistName];
-      playlist.push($scope.selected);
+      return [playlistName, playlists[playlistName]];
+    };
+    _save_playlist = function(playlistName, playlist) {
+      var playlists;
+      playlists = localStorageService.get('playlists');
+      playlists[playlistName] = playlist;
       return localStorageService.set('playlists', playlists);
+    };
+    $scope.add_to_playlist = function() {
+      var playlist, playlistName, ref;
+      ref = _current_playlist(), playlistName = ref[0], playlist = ref[1];
+      playlist.push($scope.selected);
+      return _save_playlist(playlistName, playlist);
+    };
+    $scope.remove_from_playlist = function() {
+      var filtered_playlist, playlist, playlistName, ref, song;
+      ref = _current_playlist(), playlistName = ref[0], playlist = ref[1];
+      filtered_playlist = (function() {
+        var j, len, results;
+        results = [];
+        for (j = 0, len = playlist.length; j < len; j++) {
+          song = playlist[j];
+          if (song.version !== $scope.selected.version) {
+            results.push(song);
+          }
+        }
+        return results;
+      })();
+      return _save_playlist(playlistName, filtered_playlist);
+    };
+    $scope.playlist_next = function() {
+      var current_index, next_index, next_song, playlist, playlistName, ref;
+      ref = _current_playlist(), playlistName = ref[0], playlist = ref[1];
+      current_index = localStorageService.get('playlist_index');
+      next_index = Number(current_index) + 1;
+      if (next_index > playlist.length) {
+        next_index = 0;
+      }
+      localStorageService.set('playlist_index', next_index);
+      next_song = playlist[next_index];
+      $scope.select(next_song, false);
+      return document.getElementById("search").focus();
+    };
+    return $scope.playlist_prev = function() {
+      var current_index, next_song, playlist, playlistName, prev_index, ref;
+      ref = _current_playlist(), playlistName = ref[0], playlist = ref[1];
+      current_index = localStorageService.get('playlist_index');
+      prev_index = Number(current_index) - 1;
+      if (prev_index < 0) {
+        prev_index = playlist.length - 1;
+      }
+      localStorageService.set('playlist_index', prev_index);
+      next_song = playlist[prev_index];
+      $scope.select(next_song, false);
+      return document.getElementById("search").focus();
     };
   };
 
@@ -604,9 +665,9 @@
       playlist_name: null
     };
     updatePlaylist = function(playlist) {
-      window.currentPlaylist = playlist;
       $scope.currentPlaylist = playlist;
-      return localStorage.set('current_playlist', playlist);
+      localStorage.set('current_playlist', playlist);
+      return localStorage.set('playlist_index', 0);
     };
     $scope.create = function() {
       $scope.playlists[$scope.data.playlist_name] = [];
