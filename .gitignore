@@ -2,9 +2,6 @@
 songs.json
 *.pyc
 .DS_Store
-<<<<<<< HEAD
 .bower.json
-
-=======
 node_modules
->>>>>>> master
+
