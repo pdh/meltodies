@@ -3,4 +3,4 @@ lib
 songs.json
 *.pyc
 .DS_Store
-
+node_modules
