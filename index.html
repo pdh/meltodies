@@ -74,6 +74,12 @@
         </button>
       </div>
       <div class="col-xs-6 col-lg-2">
+        <button ng-click="show_playlists()" class="btn btn-random"
+                style="background:transparent;">
+          <img src="img/playlist.png" title="Select Playlist" />
+        </button>
+      </div>
+      <div class="col-xs-6 col-lg-2">
         <button ng-show="!github" ng-click="login()" class="btn btn-primary btn-random">
           <img src="img/octocat.png" title="Connect with Github" />
         </button>
@@ -88,6 +94,20 @@
       <div class="col-xs-6 col-lg-4" id="song-controls" ng-show="github">
         <button ng-click="confirm_delete()" class="btn btn-warn">
           TRASH!
+        </button>
+      </div>
+      <div class="col-xs-6 col-lg-4" id="playlist-controls" ng-show="currentPlaylist">
+        <button ng-click="add_to_playlist()" class="btn">
+            Add
+        </button>
+        <button ng-click="remove_from_playlist()" class="btn">
+            Remove
+        </button>
+        <button ng-click="playlist_next()" class="btn">
+            Next
+        </button>
+        <button ng-click="playlist_prev()" class="btn">
+            Previous
         </button>
       </div>
     </div>
