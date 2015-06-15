@@ -6,7 +6,10 @@ window.MeltApp = angular.module 'MeltApp', [
 ]
 
 
-_setColumnWidth = (column_width) ->
+_setColumnWidth = (song_data) ->
+  column_width = Math.round(
+    _.max(song_data.split("\n"), (i) -> i.length).length * 0.618
+  )
   els = document.querySelectorAll(".song")
   w = column_width + "em"
   for el in els
@@ -38,6 +41,7 @@ youtube_iframe_template = (src) ->
     src="#{src}?vq=small&hd=0"
     frameborder="0"></iframe>
   """
+
 
 # search
 started = false
@@ -198,13 +202,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
     if metal.title.toLowerCase() isnt $location.path().toLowerCase()
       $location.path "#{metal.title}::#{metal.version}"
 
-    _setColumnWidth Math.round(
-      _.max(
-        $scope.song_data.split("\n"),
-        (i) -> i.length
-      ).length * 0.618 * (window.devicePixelRatio || 1)
-    )
-    document.getElementById('song-meta').innerHTML = $scope.song_meta
+    _setColumnWidth $scope.song_data
     $scope.song_edited = false
 
     # point - last so failure doesn't block anything
@@ -268,16 +266,14 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
       controller: PlaylistModalCtrl
       size: 'sm',
       resolve:
-          playlists: () ->
-              _playlists
+        playlists: () ->
+          _playlists
 
     complete = (data) ->
-        console.log "complete!", data
-        $scope.currentPlaylist = localStorageService.get 'current_playlist'
+      $scope.currentPlaylist = localStorageService.get 'current_playlist'
 
     dismiss = () ->
-        console.log "dismiss!"
-        $scope.currentPlaylist = localStorageService.get 'current_playlist'
+      $scope.currentPlaylist = localStorageService.get 'current_playlist'
 
     modalInstance.result.then complete, dismiss
 
@@ -631,29 +627,28 @@ AddSongModalCtrl = ($scope, $modalInstance, title) ->
 
 
 PlaylistModalCtrl = ($scope, $modalInstance, playlists) ->
-    localStorage = window.lss
-    $scope.playlists = playlists or {}
-    $scope.currentPlaylist = localStorage.get 'current_playlist'
-    $scope.data =
-        playlist_name: null
+  localStorage = window.lss
+  $scope.playlists = playlists or {}
+  $scope.currentPlaylist = localStorage.get 'current_playlist'
+  $scope.data =
+    playlist_name: null
 
-    updatePlaylist = (playlist) ->
-        $scope.currentPlaylist = playlist
-        localStorage.set 'current_playlist', playlist
-        localStorage.set 'playlist_index', 0
+  updatePlaylist = (playlist) ->
+    $scope.currentPlaylist = playlist
+    localStorage.set 'current_playlist', playlist
+    localStorage.set 'playlist_index', 0
 
-    $scope.create = () ->
-        $scope.playlists[$scope.data.playlist_name] = []
-        localStorage.set 'playlists', $scope.playlists
-        updatePlaylist($scope.data.playlist_name)
-        $scope.data.playlist_name = ''
+  $scope.create = () ->
+    $scope.playlists[$scope.data.playlist_name] = []
+    localStorage.set 'playlists', $scope.playlists
+    updatePlaylist($scope.data.playlist_name)
+    $scope.data.playlist_name = ''
 
-    $scope.selectPlaylist= (playlistName) ->
-        updatePlaylist(playlistName)
+  $scope.selectPlaylist= (playlistName) ->
+    updatePlaylist(playlistName)
 
-    $scope.ok = () ->
-        $modalInstance.close()
-
+  $scope.ok = () ->
+    $modalInstance.close()
 
 
 MeltController.$inject = [

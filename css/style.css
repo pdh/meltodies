@@ -11,6 +11,22 @@ pre {
   background: -moz-linear-gradient(#fafaff, white); /* For Firefox 3.6 to 15 */
   background: linear-gradient(#fafaff, white); /* Standard syntax (must be last) */
 }
+
+#search-row {
+  margin-top: 20px;
+  margin-bottom: 0.5em;
+  width: 50%;
+}
+
+.navbar-brand {
+  height: 93px;
+}
+
+#search {
+  z-index: 10;
+  width: 100%;
+}
+
 .search-results {
   position: absolute;
   z-index: 1;
@@ -38,6 +54,7 @@ pre {
 }
 .song-meta-container {
   padding-left: 15px;
+  padding-bottom: 15px;
 }
 .song {
   -webkit-column-count: 3;
