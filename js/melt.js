@@ -5,8 +5,11 @@
 
   window.MeltApp = angular.module('MeltApp', ['ui.utils', 'ui.bootstrap', 'LocalStorageModule', 'contenteditable', 'angulartics', 'angulartics.google.analytics']);
 
-  _setColumnWidth = function(column_width) {
-    var el, els, j, len, w;
+  _setColumnWidth = function(song_data) {
+    var column_width, el, els, j, len, w;
+    column_width = Math.round(_.max(song_data.split("\n"), function(i) {
+      return i.length;
+    }).length * 0.618);
     els = document.querySelectorAll(".song");
     w = column_width + "em";
     for (j = 0, len = els.length; j < len; j++) {
@@ -213,10 +216,7 @@
       if (metal.title.toLowerCase() !== $location.path().toLowerCase()) {
         $location.path(metal.title + "::" + metal.version);
       }
-      _setColumnWidth(Math.round(_.max($scope.song_data.split("\n"), function(i) {
-        return i.length;
-      }).length * 0.618 * (window.devicePixelRatio || 1)));
-      document.getElementById('song-meta').innerHTML = $scope.song_meta;
+      _setColumnWidth($scope.song_data);
       $scope.song_edited = false;
       return $analytics.pageTrack($location.path());
     };
@@ -290,11 +290,9 @@
         }
       });
       complete = function(data) {
-        console.log("complete!", data);
         return $scope.currentPlaylist = localStorageService.get('current_playlist');
       };
       dismiss = function() {
-        console.log("dismiss!");
         return $scope.currentPlaylist = localStorageService.get('current_playlist');
       };
       return modalInstance.result.then(complete, dismiss);

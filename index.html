@@ -24,7 +24,6 @@
 
     ga('create', 'UA-55582512-1', 'auto');
   </script>
-
   <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <meta name="viewport" content="width=device-width, initial-scale=0.48" />
@@ -32,84 +31,65 @@
   <link rel="shortcut icon" href="favicon.ico?v=adnacoi92393u2nd">
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="row start" style="margin-top:23%;margin-bottom:0.5em;">
-      <div class="col-lg-8">
-        <input
-          id="search"
-          class="input-lg"
-          style="z-index:10; width:100%"
-          type="text"
-          ng-model="query"
-          ng-change="update_results()"
-          ui-keydown="{'enter down up esc': 'query_key($event)'}"
-          placeholder="Search for Songs"
-          autocomplete="off"
-        >
-        <div class="search-results">
-          <ul id="search-list">
-            <li
-                ng-repeat="melt in results"
-                ng-click="select(melt)"
-                ng-class="{'selected': $index == ready_to_select}"
-                ng-mouseover="mouseover($index)"
-                ng-mouseleave="mouseleave($index)"
-            >
-              <span>{{ melt.title }} {{ melt.version.slice(0, 4) }}</span>
-            </li>
-            <li ng-show="results.length == 0 && query.length > 3 && github">
-              <button ng-click="start_add()"
-                      class="btn btn-success"
-                      style="width:100%;">
-                Add "{{ query }}" to your fork!
-              </button>
-            </li>
-          </ul>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand"><img src="img/melt.png"></img></a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <div>
+          <div class="navbar navbar-nav navbar-form" id="search-row">
+            <input id="search" type="text" class="input-lg"
+                   ng-model="query"
+                   ng-change="update_results()"
+                   ui-keydown="{'enter down up esc': 'query_key($event)'}"
+                   placeholder="Search for Songs"
+                   autocomplete="off">
+            <div class="search-results">
+              <ul id="search-list">
+                <li ng-repeat="melt in results"
+                    ng-click="select(melt)"
+                    ng-class="{'selected': $index == ready_to_select}"
+                    ng-mouseover="mouseover($index)"
+                    ng-mouseleave="mouseleave($index)">
+                  <span>{{ melt.title }} {{ melt.version.slice(0, 4) }}</span>
+                </li>
+                <li ng-show="results.length == 0 && query.length > 3 && github">
+                  <button ng-click="start_add()" class="btn btn-success" style="width:100%;">
+                    Add "{{ query }}" to your fork!
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="nav navbar-nav navbar-right">
+            <div class="btn-group">
+              <label class="btn" href="" ng-click="select_random_song()">Random</label>
+              <label class="btn" href="" ng-show="!github" ng-click="login()">Login</label>
+              <label class="btn" href="" ng-show="github" ng-click="logout()">Logout</label>
+              <label class="btn" href="" ng-click="show_playlists()">Playlist</label>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="col-xs-6 col-lg-2">
-        <button ng-click="select_random_song()" class="btn btn-random"
-                style="background:transparent;">
-          <img src="img/random-icon.png" title="Select Random Song" />
-        </button>
-      </div>
-      <div class="col-xs-6 col-lg-2">
-        <button ng-click="show_playlists()" class="btn btn-random"
-                style="background:transparent;">
-          <img src="img/playlist.png" title="Select Playlist" />
-        </button>
-      </div>
-      <div class="col-xs-6 col-lg-2">
-        <button ng-show="!github" ng-click="login()" class="btn btn-primary btn-random">
-          <img src="img/octocat.png" title="Connect with Github" />
-        </button>
-        <button ng-show="github" ng-click="logout()" class="btn btn-primary btn-random">
-          <img src="img/141-logout.png" title="Logout" />
-        </button>
-      </div>
-    </div><!-- row #start -->
+    </div>
+  </nav>
+  <div class="container-fluid">
     <div class="row song-meta-container" ng-show="song_meta">
-      <pre class="col-xs-6 col-lg-4" id="song-meta"></pre>
-      <div class="col-xs-6 col-lg-4" id="tube-container" ng-show="tube_id"></div>
-      <div class="col-xs-6 col-lg-4" id="song-controls" ng-show="github">
-        <button ng-click="confirm_delete()" class="btn btn-warn">
+      <div class="col-lg-6" id="song-meta">
+        <h2>{{ selected.title }}</h2>
+        <h3>{{ selected.author }}</h3>
+        <div class="btn-group" id="playlist-controls" ng-show="currentPlaylist && selected">
+          <label ng-click="add_to_playlist()" class="btn btn-primary">+</label>
+          <label ng-click="remove_from_playlist()" class="btn btn-primary">-</label>
+          <label ng-click="playlist_prev()" class="btn btn-primary">&lt;&lt;</label>
+          <label ng-click="playlist_next()" class="btn btn-primary">&gt;&gt;</label>
+        </div>
+        <button ng-show="github" ng-click="confirm_delete()" class="btn btn-warn">
           TRASH!
         </button>
       </div>
-      <div class="col-xs-6 col-lg-4" id="playlist-controls" ng-show="currentPlaylist">
-        <button ng-click="add_to_playlist()" class="btn">
-            Add
-        </button>
-        <button ng-click="remove_from_playlist()" class="btn">
-            Remove
-        </button>
-        <button ng-click="playlist_next()" class="btn">
-            Next
-        </button>
-        <button ng-click="playlist_prev()" class="btn">
-            Previous
-        </button>
-      </div>
+      <div class="col-lg-6" id="tube-container" ng-show="tube_id"></div>
     </div>
     <div class="row">
       <div class="song" ng-show="song_data">
