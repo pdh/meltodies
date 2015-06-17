@@ -3,7 +3,7 @@
   <p>Current playlist: {{ currentPlaylist }}</p>
   <ul id="playlist-songs-container">
     <li ng-repeat="song in playlists[currentPlaylist]">
-        <span>{{ song }}</span>
+        <span>{{ song.title }}, {{ song.author }}</span>
     </li>
   </ul>
 </div>
