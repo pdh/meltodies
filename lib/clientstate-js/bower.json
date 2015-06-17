@@ -1,0 +1,39 @@
+{
+  "name": "clientstate-js",
+  "version": "0.0.1",
+  "authors": [
+    "Skylar Saveland <skylar.saveland@gmail.com>"
+  ],
+  "description": "Talk to the ClientState API from the browser!",
+  "main": "dist/clientstate.min.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "redis",
+    "hotness",
+    "clientstate"
+  ],
+  "license": "Apache2",
+  "homepage": "https://clientstate.io",
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".gitignore",
+    "Gruntfile.js",
+    "bower.json",
+    "package.json",
+    "js",
+    "coverage",
+    "karma.conf.js",
+    "coffee"
+  ],
+  "dependencies": {
+    "oauth-js": "~0.3.0"
+  },
+  "devDependencies": {
+    "chai": "~1.10.0"
+  }
+}
