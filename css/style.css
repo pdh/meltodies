@@ -12,6 +12,11 @@ pre {
   background: linear-gradient(#fafaff, white); /* Standard syntax (must be last) */
 }
 
+.nav-button {
+  width: 24px;
+  height: 24px;
+}
+
 #search-row {
   margin-top: 20px;
   margin-bottom: 0.5em;
