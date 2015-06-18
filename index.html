@@ -103,9 +103,9 @@
           <label ng-click="playlist_prev()" class="btn btn-primary">&lt;&lt;</label>
           <label ng-click="playlist_next()" class="btn btn-primary">&gt;&gt;</label>
         </div>
-        <button ng-show="github" ng-click="confirm_delete()" class="btn btn-warn">
-          TRASH!
-        </button>
+        <a href="" ng-show="github" ng-click="confirm_delete()" class="btn btn-warn">
+          <img src="img/trash.png" alt="delete song" class="nav-button"/>
+        </a>
       </div>
       <div class="col-lg-6" id="tube-container" ng-show="tube_id"></div>
     </div>
