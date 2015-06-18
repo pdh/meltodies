@@ -35,6 +35,22 @@
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand"><img src="img/melt.png"></img></a>
+        <div class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <input type="text" class="input-sm"
+                   ng-model="query"
+                   ng-change="update_results()"
+                   ui-keydown="{'enter down up esc': 'query_key($event)'}"
+                   placeholder="Search for Songs"
+                   autocomplete="off">
+            <div class="btn-group">
+              <a href="" class="btn" ng-click="select_random_song()">
+                <img class="nav-button" alt="Random Song" src="img/random-icon.png" />
+              </a>
+              <label class="btn" href="" ng-show="!github" ng-click="login()">Login</label>
+              <label class="btn" href="" ng-show="github" ng-click="logout()">Logout</label>
+              <label class="btn" href="" ng-click="show_playlists()">Playlist</label>
+            </div>
+        </div>
       </div>
       <div class="collapse navbar-collapse">
         <div>
