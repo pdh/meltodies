@@ -64,7 +64,9 @@
           </div>
           <div class="nav navbar-nav navbar-right">
             <div class="btn-group">
-              <label class="btn" href="" ng-click="select_random_song()">Random</label>
+              <a href="" class="btn" ng-click="select_random_song()">
+                <img class="nav-button" alt="Random Song" src="img/random-icon.png" />
+              </a>
               <label class="btn" href="" ng-show="!github" ng-click="login()">Login</label>
               <label class="btn" href="" ng-show="github" ng-click="logout()">Logout</label>
               <label class="btn" href="" ng-click="show_playlists()">Playlist</label>
