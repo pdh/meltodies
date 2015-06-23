@@ -512,11 +512,11 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
            $scope.selected
 
     confirm = (data) ->
-      console.log "COMPLETE!"
       title = $scope.selected.title.toLowerCase().replace /\ /g, '_'
       branchname = "remove_#{title}_#{$scope.selected.version}"
       user_repo = $scope.github.getRepo $scope.userInfo.login, "meltodies"
       master = user_repo.getBranch('master')
+      body = data.reason or ""
 
       err = (err) ->
         console.log "ERR!", err
@@ -530,6 +530,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
           "title": "Remove #{$scope.selected.file}"
           "head": "#{$scope.userInfo.login}:#{branchname}"
           "base": "master"
+          "body": body
         pr.then afterPull, err
 
       createSuccess = () ->
@@ -599,6 +600,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
 DeleteSongModalCtrl = ($scope, $modalInstance, selected) ->
   $scope.data =
     selected: selected
+    reason: null
   $scope.ok = () ->
     $modalInstance.close($scope.data)
   $scope.cancel = () ->
