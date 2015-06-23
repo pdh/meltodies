@@ -527,12 +527,12 @@
         }
       });
       confirm = function(data) {
-        var afterPull, branchname, createSuccess, err, master, removeSuccess, title, user_repo;
-        console.log("COMPLETE!");
+        var afterPull, body, branchname, createSuccess, err, master, removeSuccess, title, user_repo;
         title = $scope.selected.title.toLowerCase().replace(/\ /g, '_');
         branchname = "remove_" + title + "_" + $scope.selected.version;
         user_repo = $scope.github.getRepo($scope.userInfo.login, "meltodies");
         master = user_repo.getBranch('master');
+        body = data.reason || "";
         err = function(err) {
           return console.log("ERR!", err);
         };
@@ -545,7 +545,8 @@
           pr = $scope.upstream_repo.createPullRequest({
             "title": "Remove " + $scope.selected.file,
             "head": $scope.userInfo.login + ":" + branchname,
-            "base": "master"
+            "base": "master",
+            "body": body
           });
           return pr.then(afterPull, err);
         };
@@ -627,7 +628,8 @@
 
   DeleteSongModalCtrl = function($scope, $modalInstance, selected) {
     $scope.data = {
-      selected: selected
+      selected: selected,
+      reason: null
     };
     $scope.ok = function() {
       return $modalInstance.close($scope.data);
