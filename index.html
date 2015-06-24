@@ -34,7 +34,7 @@
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand"><img src="img/melt.png"></img></a>
+        <a class="navbar-brand"><img id="melt-img" src="img/melt.png"></img></a>
         <div class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <input type="text" class="input-sm"
                    ng-model="query"
@@ -42,7 +42,11 @@
                    ui-keydown="{'enter down up esc': 'query_key($event)'}"
                    placeholder="Search for Songs"
                    autocomplete="off">
+
             <div class="btn-group">
+              <a href="" class="btn">
+                <img class="nav-button" alt="Github" src="img/github.png" />
+              </a>
               <a href="" class="btn" ng-click="select_random_song()">
                 <img class="nav-button" alt="Random Song" src="img/random-icon.png" />
               </a>
@@ -55,7 +59,7 @@
       <div class="collapse navbar-collapse">
         <div>
           <div class="navbar navbar-nav navbar-form" id="search-row">
-            <input id="search" type="text" class="input-lg"
+            <input id="search" type="text" class="input-md"
                    ng-model="query"
                    ng-change="update_results()"
                    ui-keydown="{'enter down up esc': 'query_key($event)'}"
@@ -80,6 +84,9 @@
           </div>
           <div class="nav navbar-nav navbar-right">
             <div class="btn-group">
+              <a href="https://github.com/pdh/meltodies" class="btn">
+                <img class="nav-button" alt="Github" src="img/github.png" />
+              </a>
               <a href="" class="btn" ng-click="select_random_song()">
                 <img class="nav-button" alt="Random Song" src="img/random-icon.png" />
               </a>
