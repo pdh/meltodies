@@ -3,10 +3,17 @@
 </div>
 
 <div class="modal-body">
-This will create a PR to remove this version of this song!
+    <h3>Song removal request:</h3>
+    <form role="form">
+        <input type="textarea"
+               class="form-control"
+               ng-model="data.reason"
+               ui-keydown="{'enter': 'ok()'}"
+               placeholder="Reason for removal (recommended)">
+    </form>
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-primary" ng-click="ok()">MAKE PULL REQUEST!</button>
+  <button class="btn btn-primary" ng-click="ok()">Submit Request</button>
   <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
 </div>

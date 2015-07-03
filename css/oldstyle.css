@@ -1,0 +1,97 @@
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  white-space: nowrap;
+}
+pre {
+  border: 0 none;
+  background: -webkit-linear-gradient(#fafaff, white); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#fafaff, white); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#fafaff, white); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#fafaff, white); /* Standard syntax (must be last) */
+}
+
+.nav-button {
+  width: 24px;
+  height: 24px;
+}
+
+#search-row {
+  margin-top: 20px;
+  margin-bottom: 0.5em;
+  width: 50%;
+}
+
+.navbar-brand {
+  height: 93px;
+}
+
+#search {
+  z-index: 10;
+  width: 100%;
+}
+
+.search-results {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  margin-top: 0em;
+  padding-right: 30px;
+
+}
+#search-list {
+  max-height: 260px;
+  overflow: auto;
+}
+#search-list li {
+  font-size: 130%;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+#search-list li span {
+  padding-left: 15px;
+}
+#search-list li.selected {background: yellow;}
+
+.opacity {
+  filter: alpha(opacity=80);
+  opacity: 0.8;
+}
+.song-meta-container {
+  padding-left: 15px;
+  padding-bottom: 15px;
+}
+.song {
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+  -webkit-column-rule: 1px outset #ff00ff;
+  -moz-column-rule: 1px outset #ff00ff;
+  column-rule: 1px outset #ff00ff;
+  /* make it like col-md .. */
+  padding-left: 15px;
+}
+
+.song pre {
+  /* break-word makes it too confusing with chords ... hrm ... */
+  word-wrap: normal;
+  overflow: unset; /* fix for moz */
+  padding-left: 15px;
+}
+
+@media screen and (max-width: 580px) {
+  .song pre {
+    font-size: 85%;
+  }
+}
+
+.btn-random {
+  width: 100%;
+  margin: 3px auto;
+  border: 1px black solid;
+}
+.btn-random img {
+  width: 33px;
+  height: 27px;
+  margin: 0 5px;
+}

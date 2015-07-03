@@ -34,12 +34,32 @@
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand"><img src="img/melt.png"></img></a>
+        <a class="navbar-brand"><img id="melt-img" src="img/melt.png"></img></a>
+        <div class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <input type="text" class="input-sm"
+                   ng-model="query"
+                   ng-change="update_results()"
+                   ui-keydown="{'enter down up esc': 'query_key($event)'}"
+                   placeholder="Search for Songs"
+                   autocomplete="off">
+
+            <div class="btn-group">
+              <a href="" class="btn">
+                <img class="nav-button" alt="Github" src="img/github.png" />
+              </a>
+              <a href="" class="btn" ng-click="select_random_song()">
+                <img class="nav-button" alt="Random Song" src="img/random-icon.png" />
+              </a>
+              <label class="btn" href="" ng-show="!github" ng-click="login()">Login</label>
+              <label class="btn" href="" ng-show="github" ng-click="logout()">Logout</label>
+              <label class="btn" href="" ng-click="show_playlists()">Playlist</label>
+            </div>
+        </div>
       </div>
       <div class="collapse navbar-collapse">
         <div>
           <div class="navbar navbar-nav navbar-form" id="search-row">
-            <input id="search" type="text" class="input-lg"
+            <input id="search" type="text" class="input-md"
                    ng-model="query"
                    ng-change="update_results()"
                    ui-keydown="{'enter down up esc': 'query_key($event)'}"
@@ -64,7 +84,12 @@
           </div>
           <div class="nav navbar-nav navbar-right">
             <div class="btn-group">
-              <label class="btn" href="" ng-click="select_random_song()">Random</label>
+              <a href="https://github.com/pdh/meltodies" class="btn">
+                <img class="nav-button" alt="Github" src="img/github.png" />
+              </a>
+              <a href="" class="btn" ng-click="select_random_song()">
+                <img class="nav-button" alt="Random Song" src="img/random-icon.png" />
+              </a>
               <label class="btn" href="" ng-show="!github" ng-click="login()">Login</label>
               <label class="btn" href="" ng-show="github" ng-click="logout()">Logout</label>
               <label class="btn" href="" ng-click="show_playlists()">Playlist</label>
@@ -85,9 +110,9 @@
           <label ng-click="playlist_prev()" class="btn btn-primary">&lt;&lt;</label>
           <label ng-click="playlist_next()" class="btn btn-primary">&gt;&gt;</label>
         </div>
-        <button ng-show="github" ng-click="confirm_delete()" class="btn btn-warn">
-          TRASH!
-        </button>
+        <a href="" ng-show="github" ng-click="confirm_delete()" class="btn btn-warn">
+          <img src="img/trash.png" alt="delete song" class="nav-button"/>
+        </a>
       </div>
       <div class="col-lg-6" id="tube-container" ng-show="tube_id"></div>
     </div>
