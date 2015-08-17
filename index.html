@@ -101,19 +101,39 @@
   </nav>
   <div class="container-fluid">
     <div class="row song-meta-container" ng-show="song_meta">
+
       <div class="col-lg-6" id="song-meta">
         <h2>{{ selected.title }}</h2>
         <h3>{{ selected.author }}</h3>
-        <div class="btn-group" id="playlist-controls" ng-show="currentPlaylist && selected">
-          <label ng-click="add_to_playlist()" class="btn btn-primary">+</label>
-          <label ng-click="remove_from_playlist()" class="btn btn-primary">-</label>
-          <label ng-click="playlist_prev()" class="btn btn-primary">&lt;&lt;</label>
-          <label ng-click="playlist_next()" class="btn btn-primary">&gt;&gt;</label>
+        <div class="btn-group" id="playlist-controls"
+          ng-show="currentPlaylist && selected"
+        >
+          <label
+            class="btn btn-primary"
+            ng-click="add_to_playlist()"
+            ng-show="!current_selection_in_playlist()"
+          >+</label>
+          <label
+            class="btn btn-primary"
+            ng-click="remove_from_playlist()"
+            ng-show="current_selection_in_playlist()"
+          >-</label>
+          <label
+            class="btn btn-primary"
+            ng-click="playlist_prev()"
+          >&lt;&lt;</label>
+          <label
+            class="btn btn-primary"
+            ng-click="playlist_next()"
+          >&gt;&gt;</label>
         </div>
-        <a href="" ng-show="github" ng-click="confirm_delete()" class="btn btn-warn">
+        <a href="" class="btn btn-warn"
+          ng-show="github" ng-click="confirm_delete()"
+        >
           <img src="img/trash.png" alt="delete song" class="nav-button"/>
         </a>
-      </div>
+      </div><!-- #song-meta -->
+
       <div class="col-lg-6" id="tube-container" ng-show="tube_id"></div>
     </div>
     <div class="row">
