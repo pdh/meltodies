@@ -6,9 +6,12 @@ Chords and lyrics for face melting melodies.
 Get On Up
 ---------
 
-install bower and run `bower install`
+Assuming you have Python installed. Run:
 
-run `./update_songs.py`
+    pip install -r requirements.txt
+    python update_songs.py
+
+Now, install bower and run `bower install`
 
 Run a dev server:
 

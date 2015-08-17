@@ -576,6 +576,14 @@
       playlists[playlistName] = playlist;
       return localStorageService.set('playlists', playlists);
     };
+    $scope.current_selection_in_playlist = function() {
+      var playlist, playlistName, ref, res;
+      ref = _current_playlist(), playlistName = ref[0], playlist = ref[1];
+      res = _.filter(playlist, function(item) {
+        return item.version === $scope.selected.version;
+      });
+      return Boolean(res.length);
+    };
     $scope.add_to_playlist = function() {
       var playlist, playlistName, ref;
       ref = _current_playlist(), playlistName = ref[0], playlist = ref[1];
