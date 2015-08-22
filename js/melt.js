@@ -568,6 +568,9 @@
       var playlistName, playlists;
       playlistName = localStorageService.get('current_playlist');
       playlists = localStorageService.get('playlists');
+      if (!playlists || !playlistName) {
+        return [null, null];
+      }
       return [playlistName, playlists[playlistName]];
     };
     _save_playlist = function(playlistName, playlist) {
@@ -580,7 +583,7 @@
       var playlist, playlistName, ref, res;
       ref = _current_playlist(), playlistName = ref[0], playlist = ref[1];
       res = _.filter(playlist, function(item) {
-        return item.version === $scope.selected.version;
+        return $scope.selected && (item.version === $scope.selected.version);
       });
       return Boolean(res.length);
     };

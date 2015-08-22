@@ -555,6 +555,8 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
   _current_playlist = () ->
     playlistName = localStorageService.get 'current_playlist'
     playlists = localStorageService.get 'playlists'
+    if not playlists or not playlistName
+      return [null, null]
     [playlistName, playlists[playlistName]]
 
   _save_playlist = (playlistName, playlist) ->
@@ -565,7 +567,7 @@ MeltController = ($scope, $http, $modal, $location, localStorageService, $analyt
   $scope.current_selection_in_playlist = () ->
     [playlistName, playlist] = _current_playlist()
     res = _.filter playlist, (item) ->
-      return item.version is $scope.selected.version
+      return $scope.selected and (item.version is $scope.selected.version)
     Boolean res.length
 
   $scope.add_to_playlist = () ->
